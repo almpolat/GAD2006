@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <None Include="..\..\CoA.uproject" />
+    <Filter Include="Source">
+      <UniqueIdentifier>{F31BBDD1-B3E8-3BCC-9652-680E16935819}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\CoA.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <None Include="..\..\Source\CoAEditor.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <None Include="..\..\.vsconfig" />
+    <Filter Include="Config">
+      <UniqueIdentifier>{FA535FFB-25E1-3D20-B416-52F9BE21E06E}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Config\DefaultEditor.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultEditorPerProjectUserSettings.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultEngine.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultGame.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultInput.ini">
+      <Filter>Config</Filter>
+    </None>
+    <Filter Include="Source\CoA">
+      <UniqueIdentifier>{11ECEDFA-B6A4-3F9D-81AA-E50A32C89578}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\CoA\CoA.Build.cs">
+      <Filter>Source\CoA</Filter>
+    </None>
+    <ClCompile Include="..\..\Source\CoA\CoA.cpp">
+      <Filter>Source\CoA</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\CoA\CoA.h">
+      <Filter>Source\CoA</Filter>
+    </ClInclude>
+    <Filter Include="Source\CoA\Private">
+      <UniqueIdentifier>{A17201B1-3802-319C-A49C-5FD32EF3A017}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\CoA\Private\COABaseCharacter.cpp">
+      <Filter>Source\CoA\Private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\CoA\Private\COAGameMode.cpp">
+      <Filter>Source\CoA\Private</Filter>
+    </ClCompile>
+    <Filter Include="Source\CoA\Public">
+      <UniqueIdentifier>{75302EEC-CA93-39F8-8CAC-7E7C3CBA1B6D}</UniqueIdentifier>
+    </Filter>
+    <ClInclude Include="..\..\Source\CoA\Public\COABaseCharacter.h">
+      <Filter>Source\CoA\Public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\CoA\Public\COAGameMode.h">
+      <Filter>Source\CoA\Public</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

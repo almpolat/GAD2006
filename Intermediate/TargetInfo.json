@@ -1,0 +1,14 @@
+{
+	"Targets": [
+		{
+			"Name": "CoA",
+			"Path": "..\\Source\\CoA.Target.cs",
+			"Type": "Game"
+		},
+		{
+			"Name": "CoAEditor",
+			"Path": "..\\Source\\CoAEditor.Target.cs",
+			"Type": "Editor"
+		}
+	]
+}
