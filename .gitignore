@@ -361,3 +361,10 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsdSaved/ 
+Content/StarterContent/
+Content/__ExternalActors__/
+Content/__ExternalObjects__/
+Content/Characters/
+Content/Collections/
+Content/Developers/
+Content/LevelPrototyping/
