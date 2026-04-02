@@ -17,6 +17,13 @@ public:
     ACOAAvatar();
 
 private:
+    virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+    void MoveForward(float Value);
+    void MoveRight(float Value);
+    void Turn(float Value);
+    void LookUp(float Value);
+
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     class USpringArmComponent* mSpringArm;
 
