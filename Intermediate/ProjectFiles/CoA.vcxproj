@@ -252,6 +252,8 @@
     <None Include="..\..\CoA.uproject"/>
     <None Include="..\..\Source\CoA.Target.cs"/>
     <None Include="..\..\Source\CoAEditor.Target.cs"/>
+    <None Include="..\..\.gitattributes"/>
+    <None Include="..\..\.gitignore"/>
     <None Include="..\..\.vsconfig"/>
     <None Include="..\..\Config\DefaultEditor.ini"/>
     <None Include="..\..\Config\DefaultEditorPerProjectUserSettings.ini"/>
@@ -263,12 +265,16 @@
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ClInclude Include="..\..\Source\CoA\CoA.h"/>
+    <ClCompile Include="..\..\Source\CoA\Private\COAAvatar.cpp">
+      <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
     <ClCompile Include="..\..\Source\CoA\Private\COABaseCharacter.cpp">
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <ClCompile Include="..\..\Source\CoA\Private\COAGameMode.cpp">
       <AdditionalIncludeDirectories>$(ClCompile_AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
+    <ClInclude Include="..\..\Source\CoA\Public\COAAvatar.h"/>
     <ClInclude Include="..\..\Source\CoA\Public\COABaseCharacter.h"/>
     <ClInclude Include="..\..\Source\CoA\Public\COAGameMode.h"/>
   </ItemGroup>
