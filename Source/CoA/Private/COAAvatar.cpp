@@ -1,6 +1,7 @@
 #include "COAAvatar.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 ACOAAvatar::ACOAAvatar()
 {
@@ -24,6 +25,8 @@ void ACOAAvatar::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
     PlayerInputComponent->BindAxis("LookUp", this, &ACOAAvatar::LookUp);
     PlayerInputComponent->BindAxis("MoveForward", this, &ACOAAvatar::MoveForward);
     PlayerInputComponent->BindAxis("MoveRight", this, &ACOAAvatar::MoveRight);
+    PlayerInputComponent->BindAction("Run", IE_Pressed, this, &ACOAAvatar::RunPressed);
+    PlayerInputComponent->BindAction("Run", IE_Released, this, &ACOAAvatar::RunReleased);
 }
 
 void ACOAAvatar::Turn(float Value)
@@ -50,4 +53,19 @@ void ACOAAvatar::MoveRight(float Value)
     FRotator YawRotation(0.0f, Rotation.Yaw, 0.0f);
     FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
     AddMovementInput(Direction, Value);
+}
+
+void ACOAAvatar::RunPressed()
+{
+    if (!bStaminaDrained)
+    {
+        bRunning = true;
+        GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
+    }
+}
+
+void ACOAAvatar::RunReleased()
+{
+    bRunning = false;
+    GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 }

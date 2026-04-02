@@ -30,6 +30,20 @@ public:
 	UPROPERTY(EditAnywhere, Category = "COA")
 	float WalkSpeed;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Stamina = 100.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MaxStamina = 100.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float StaminaGainRate = 10.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float StaminaDrainRate = 20.0f;
+
+	bool bStaminaDrained = false;
+	bool bRunning = false;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

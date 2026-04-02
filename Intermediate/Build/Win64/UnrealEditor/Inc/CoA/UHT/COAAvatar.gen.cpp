@@ -50,9 +50,15 @@ struct Z_Construct_UClass_ACOAAvatar_Statics
 		{ "EditInline", "true" },
 		{ "ModuleRelativePath", "Public/COAAvatar.h" },
 	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_RunSpeed_MetaData[] = {
+		{ "AllowPrivateAccess", "true" },
+		{ "Category", "COAAvatar" },
+		{ "ModuleRelativePath", "Public/COAAvatar.h" },
+	};
 #endif // WITH_METADATA
 	static const UECodeGen_Private::FObjectPropertyParams NewProp_mSpringArm;
 	static const UECodeGen_Private::FObjectPropertyParams NewProp_mCamera;
+	static const UECodeGen_Private::FFloatPropertyParams NewProp_RunSpeed;
 	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
 	static UObject* (*const DependentSingletons[])();
 	static constexpr FCppClassTypeInfoStatic StaticCppClassTypeInfo = {
@@ -62,9 +68,11 @@ struct Z_Construct_UClass_ACOAAvatar_Statics
 };
 const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_ACOAAvatar_Statics::NewProp_mSpringArm = { "mSpringArm", nullptr, (EPropertyFlags)0x00400000000a001d, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(ACOAAvatar, mSpringArm), Z_Construct_UClass_USpringArmComponent_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_mSpringArm_MetaData), NewProp_mSpringArm_MetaData) };
 const UECodeGen_Private::FObjectPropertyParams Z_Construct_UClass_ACOAAvatar_Statics::NewProp_mCamera = { "mCamera", nullptr, (EPropertyFlags)0x00400000000a001d, UECodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(ACOAAvatar, mCamera), Z_Construct_UClass_UCameraComponent_NoRegister, METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_mCamera_MetaData), NewProp_mCamera_MetaData) };
+const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_ACOAAvatar_Statics::NewProp_RunSpeed = { "RunSpeed", nullptr, (EPropertyFlags)0x0040000000000005, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(ACOAAvatar, RunSpeed), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_RunSpeed_MetaData), NewProp_RunSpeed_MetaData) };
 const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_ACOAAvatar_Statics::PropPointers[] = {
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ACOAAvatar_Statics::NewProp_mSpringArm,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ACOAAvatar_Statics::NewProp_mCamera,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ACOAAvatar_Statics::NewProp_RunSpeed,
 };
 static_assert(UE_ARRAY_COUNT(Z_Construct_UClass_ACOAAvatar_Statics::PropPointers) < 2048);
 UObject* (*const Z_Construct_UClass_ACOAAvatar_Statics::DependentSingletons[])() = {
@@ -107,10 +115,10 @@ ACOAAvatar::~ACOAAvatar() {}
 struct Z_CompiledInDeferFile_FID_Users_Alimert_Documents_Unreal_Projects_CoA_Source_CoA_Public_COAAvatar_h_Statics
 {
 	static constexpr FClassRegisterCompiledInInfo ClassInfo[] = {
-		{ Z_Construct_UClass_ACOAAvatar, ACOAAvatar::StaticClass, TEXT("ACOAAvatar"), &Z_Registration_Info_UClass_ACOAAvatar, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(ACOAAvatar), 1076921068U) },
+		{ Z_Construct_UClass_ACOAAvatar, ACOAAvatar::StaticClass, TEXT("ACOAAvatar"), &Z_Registration_Info_UClass_ACOAAvatar, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(ACOAAvatar), 3331880051U) },
 	};
 };
-static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Users_Alimert_Documents_Unreal_Projects_CoA_Source_CoA_Public_COAAvatar_h_1995375264(TEXT("/Script/CoA"),
+static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Users_Alimert_Documents_Unreal_Projects_CoA_Source_CoA_Public_COAAvatar_h_3313967964(TEXT("/Script/CoA"),
 	Z_CompiledInDeferFile_FID_Users_Alimert_Documents_Unreal_Projects_CoA_Source_CoA_Public_COAAvatar_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Users_Alimert_Documents_Unreal_Projects_CoA_Source_CoA_Public_COAAvatar_h_Statics::ClassInfo),
 	nullptr, 0,
 	nullptr, 0);

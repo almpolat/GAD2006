@@ -53,6 +53,22 @@ struct Z_Construct_UClass_ACOABaseCharacter_Statics
 		{ "Category", "COA" },
 		{ "ModuleRelativePath", "Public/COABaseCharacter.h" },
 	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_Stamina_MetaData[] = {
+		{ "Category", "COABaseCharacter" },
+		{ "ModuleRelativePath", "Public/COABaseCharacter.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_MaxStamina_MetaData[] = {
+		{ "Category", "COABaseCharacter" },
+		{ "ModuleRelativePath", "Public/COABaseCharacter.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_StaminaGainRate_MetaData[] = {
+		{ "Category", "COABaseCharacter" },
+		{ "ModuleRelativePath", "Public/COABaseCharacter.h" },
+	};
+	static constexpr UECodeGen_Private::FMetaDataPairParam NewProp_StaminaDrainRate_MetaData[] = {
+		{ "Category", "COABaseCharacter" },
+		{ "ModuleRelativePath", "Public/COABaseCharacter.h" },
+	};
 #endif // WITH_METADATA
 	static void NewProp_bDead_SetBit(void* Obj);
 	static const UECodeGen_Private::FBoolPropertyParams NewProp_bDead;
@@ -60,6 +76,10 @@ struct Z_Construct_UClass_ACOABaseCharacter_Statics
 	static const UECodeGen_Private::FFloatPropertyParams NewProp_MaxHealth;
 	static const UECodeGen_Private::FFloatPropertyParams NewProp_HealingRate;
 	static const UECodeGen_Private::FFloatPropertyParams NewProp_WalkSpeed;
+	static const UECodeGen_Private::FFloatPropertyParams NewProp_Stamina;
+	static const UECodeGen_Private::FFloatPropertyParams NewProp_MaxStamina;
+	static const UECodeGen_Private::FFloatPropertyParams NewProp_StaminaGainRate;
+	static const UECodeGen_Private::FFloatPropertyParams NewProp_StaminaDrainRate;
 	static const UECodeGen_Private::FPropertyParamsBase* const PropPointers[];
 	static UObject* (*const DependentSingletons[])();
 	static constexpr FCppClassTypeInfoStatic StaticCppClassTypeInfo = {
@@ -76,12 +96,20 @@ const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_ACOABaseCharact
 const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_ACOABaseCharacter_Statics::NewProp_MaxHealth = { "MaxHealth", nullptr, (EPropertyFlags)0x0010000000000001, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(ACOABaseCharacter, MaxHealth), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_MaxHealth_MetaData), NewProp_MaxHealth_MetaData) };
 const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_ACOABaseCharacter_Statics::NewProp_HealingRate = { "HealingRate", nullptr, (EPropertyFlags)0x0010000000000015, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(ACOABaseCharacter, HealingRate), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_HealingRate_MetaData), NewProp_HealingRate_MetaData) };
 const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_ACOABaseCharacter_Statics::NewProp_WalkSpeed = { "WalkSpeed", nullptr, (EPropertyFlags)0x0010000000000001, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(ACOABaseCharacter, WalkSpeed), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_WalkSpeed_MetaData), NewProp_WalkSpeed_MetaData) };
+const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_ACOABaseCharacter_Statics::NewProp_Stamina = { "Stamina", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(ACOABaseCharacter, Stamina), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_Stamina_MetaData), NewProp_Stamina_MetaData) };
+const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_ACOABaseCharacter_Statics::NewProp_MaxStamina = { "MaxStamina", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(ACOABaseCharacter, MaxStamina), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_MaxStamina_MetaData), NewProp_MaxStamina_MetaData) };
+const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_ACOABaseCharacter_Statics::NewProp_StaminaGainRate = { "StaminaGainRate", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(ACOABaseCharacter, StaminaGainRate), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_StaminaGainRate_MetaData), NewProp_StaminaGainRate_MetaData) };
+const UECodeGen_Private::FFloatPropertyParams Z_Construct_UClass_ACOABaseCharacter_Statics::NewProp_StaminaDrainRate = { "StaminaDrainRate", nullptr, (EPropertyFlags)0x0010000000000005, UECodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, nullptr, nullptr, 1, STRUCT_OFFSET(ACOABaseCharacter, StaminaDrainRate), METADATA_PARAMS(UE_ARRAY_COUNT(NewProp_StaminaDrainRate_MetaData), NewProp_StaminaDrainRate_MetaData) };
 const UECodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_ACOABaseCharacter_Statics::PropPointers[] = {
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ACOABaseCharacter_Statics::NewProp_bDead,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ACOABaseCharacter_Statics::NewProp_Health,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ACOABaseCharacter_Statics::NewProp_MaxHealth,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ACOABaseCharacter_Statics::NewProp_HealingRate,
 	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ACOABaseCharacter_Statics::NewProp_WalkSpeed,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ACOABaseCharacter_Statics::NewProp_Stamina,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ACOABaseCharacter_Statics::NewProp_MaxStamina,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ACOABaseCharacter_Statics::NewProp_StaminaGainRate,
+	(const UECodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ACOABaseCharacter_Statics::NewProp_StaminaDrainRate,
 };
 static_assert(UE_ARRAY_COUNT(Z_Construct_UClass_ACOABaseCharacter_Statics::PropPointers) < 2048);
 UObject* (*const Z_Construct_UClass_ACOABaseCharacter_Statics::DependentSingletons[])() = {
@@ -124,10 +152,10 @@ ACOABaseCharacter::~ACOABaseCharacter() {}
 struct Z_CompiledInDeferFile_FID_Users_Alimert_Documents_Unreal_Projects_CoA_Source_CoA_Public_COABaseCharacter_h_Statics
 {
 	static constexpr FClassRegisterCompiledInInfo ClassInfo[] = {
-		{ Z_Construct_UClass_ACOABaseCharacter, ACOABaseCharacter::StaticClass, TEXT("ACOABaseCharacter"), &Z_Registration_Info_UClass_ACOABaseCharacter, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(ACOABaseCharacter), 2244815850U) },
+		{ Z_Construct_UClass_ACOABaseCharacter, ACOABaseCharacter::StaticClass, TEXT("ACOABaseCharacter"), &Z_Registration_Info_UClass_ACOABaseCharacter, CONSTRUCT_RELOAD_VERSION_INFO(FClassReloadVersionInfo, sizeof(ACOABaseCharacter), 3294632112U) },
 	};
 };
-static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Users_Alimert_Documents_Unreal_Projects_CoA_Source_CoA_Public_COABaseCharacter_h_1292390957(TEXT("/Script/CoA"),
+static FRegisterCompiledInInfo Z_CompiledInDeferFile_FID_Users_Alimert_Documents_Unreal_Projects_CoA_Source_CoA_Public_COABaseCharacter_h_3873301831(TEXT("/Script/CoA"),
 	Z_CompiledInDeferFile_FID_Users_Alimert_Documents_Unreal_Projects_CoA_Source_CoA_Public_COABaseCharacter_h_Statics::ClassInfo, UE_ARRAY_COUNT(Z_CompiledInDeferFile_FID_Users_Alimert_Documents_Unreal_Projects_CoA_Source_CoA_Public_COABaseCharacter_h_Statics::ClassInfo),
 	nullptr, 0,
 	nullptr, 0);

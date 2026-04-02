@@ -30,4 +30,9 @@ private:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
     class UCameraComponent* mCamera;
 	
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+    float RunSpeed = 600.0f;
+
+    void RunPressed();
+    void RunReleased();
 };
