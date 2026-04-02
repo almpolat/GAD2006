@@ -60,12 +60,20 @@ void ACOAAvatar::RunPressed()
     if (!bStaminaDrained)
     {
         bRunning = true;
-        GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
+        UpdateMovementParams();
     }
 }
 
 void ACOAAvatar::RunReleased()
 {
     bRunning = false;
-    GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+    UpdateMovementParams();
+}
+
+void ACOAAvatar::UpdateMovementParams()
+{
+    if (bRunning && !bStaminaDrained)
+        GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
+    else
+        GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 }

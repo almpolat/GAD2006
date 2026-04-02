@@ -35,4 +35,5 @@ private:
 
     void RunPressed();
     void RunReleased();
+    void UpdateMovementParams();
 };
