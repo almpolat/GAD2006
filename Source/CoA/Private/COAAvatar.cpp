@@ -17,10 +17,36 @@ ACOAAvatar::ACOAAvatar()
     mCamera->bUsePawnControlRotation = false;
 }
 
+void ACOAAvatar::BeginPlay()
+{
+    Super::BeginPlay();
+}
+
+void ACOAAvatar::Tick(float DeltaTime)
+{
+    Super::Tick(DeltaTime);
+
+    if (bRunning && !bStaminaDrained)
+    {
+        Stamina -= StaminaDrainRate * DeltaTime;
+        if (Stamina <= 0.0f)
+        {
+            Stamina = 0.0f;
+            bStaminaDrained = true;
+            GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+        }
+    }
+    else if (!bRunning)
+    {
+        Stamina = FMath::Min(MaxStamina, Stamina + StaminaGainRate * DeltaTime);
+        if (Stamina >= MaxStamina)
+            bStaminaDrained = false;
+    }
+}
+
 void ACOAAvatar::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
     Super::SetupPlayerInputComponent(PlayerInputComponent);
-
     PlayerInputComponent->BindAxis("Turn", this, &ACOAAvatar::Turn);
     PlayerInputComponent->BindAxis("LookUp", this, &ACOAAvatar::LookUp);
     PlayerInputComponent->BindAxis("MoveForward", this, &ACOAAvatar::MoveForward);
