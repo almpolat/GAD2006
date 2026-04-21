@@ -3,13 +3,13 @@
 using UnrealBuildTool;
 using System.Collections.Generic;
 
-public class CoATarget : TargetRules
+public class Labwork1Target : TargetRules
 {
-	public CoATarget(TargetInfo Target) : base(Target)
+	public Labwork1Target(TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Game;
 		DefaultBuildSettings = BuildSettingsVersion.V5;
 
-		ExtraModuleNames.AddRange( new string[] { "CoA" } );
+		ExtraModuleNames.AddRange( new string[] { "Labwork1" } );
 	}
 }
