@@ -4,7 +4,7 @@
 #include "COAAvatar.generated.h"
 
 UCLASS()
-class COA_API ACOAAvatar : public ACOABaseCharacter
+class LABWORK1_API ACOAAvatar : public ACOABaseCharacter
 {
     GENERATED_BODY()
 

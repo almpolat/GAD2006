@@ -10,7 +10,7 @@
  * 
  */
 UCLASS()
-class COA_API ACOAGameMode : public AGameModeBase
+class LABWORK1_API ACOAGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 	

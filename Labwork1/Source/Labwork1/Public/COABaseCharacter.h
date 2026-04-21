@@ -5,7 +5,7 @@
 #include "COABaseCharacter.generated.h"
 
 UCLASS()
-class COA_API ACOABaseCharacter : public ACharacter
+class LABWORK1_API ACOABaseCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
