@@ -390,4 +390,19 @@ Labwork2/Content/Developers/
 Labwork2/Content/Materials/
 Labwork2/Content/Meshes/
 Labwork2/Content/UI/
+
+# Labwork3 - UE5 ignored folders
+Labwork3/Binaries/
+Labwork3/Intermediate/
+Labwork3/DerivedDataCache/
+Labwork3/Saved/
+Labwork3/.vs/
+Labwork3/Labwork3.sln
+Labwork3/.vsconfig
+Labwork3/Content/Collections/
+Labwork3/Content/Developers/
+Labwork3/Content/Materials/
+Labwork3/Content/Models/
+Labwork3/Content/Textures/
+Labwork3/Content/UI/
  
