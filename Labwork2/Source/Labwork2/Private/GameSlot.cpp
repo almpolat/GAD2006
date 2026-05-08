@@ -6,75 +6,64 @@ AGameSlot::AGameSlot()
 {
     PrimaryActorTick.bCanEverTick = true;
 
-    RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
-
     Box = CreateDefaultSubobject<UBoxComponent>(TEXT("Box"));
-    Box->SetupAttachment(RootComponent);
-    Box->SetBoxExtent(FVector(50, 50, 2));
-    Box->SetCollisionResponseToAllChannels(ECR_Block);
+    RootComponent = Box;
 
-    static ConstructorHelpers::FObjectFinder<UStaticMesh> DefaultSlotMesh(TEXT("/Engine/BasicShapes/Plane"));
     Plane = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Plane"));
     Plane->SetupAttachment(RootComponent);
-    Plane->SetStaticMesh(DefaultSlotMesh.Object);
 
-    static ConstructorHelpers::FObjectFinder<UMaterialInterface>
-        M_Default(TEXT("Material'/Game/Materials/MAT_GridSlot.MAT_GridSlot'"));
-    static ConstructorHelpers::FObjectFinder<UMaterialInterface>
-        M_Highlighted(TEXT("MaterialInstanceConstant'/Game/Materials/MAT_GridSlot_Highlighted.MAT_GridSlot_Highlighted'"));
-    static ConstructorHelpers::FObjectFinder<UMaterialInterface>
-        M_Offensive(TEXT("MaterialInstanceConstant'/Game/Materials/MAT_GridSlot_Offensive.MAT_GridSlot_Offensive'"));
-    static ConstructorHelpers::FObjectFinder<UMaterialInterface>
-        M_Supportive(TEXT("MaterialInstanceConstant'/Game/Materials/MAT_GridSlot_Supportive.MAT_GridSlot_Supportive'"));
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> PlaneMesh(TEXT("/Engine/BasicShapes/Plane.Plane"));
+    if (PlaneMesh.Succeeded())
+    {
+        Plane->SetStaticMesh(PlaneMesh.Object);
+    }
 
-    Mat_Default = M_Default.Object;
-    Mat_Highlighted = M_Highlighted.Object;
-    Mat_Offensive = M_Offensive.Object;
-    Mat_Supportive = M_Supportive.Object;
-
+    GridState = EGridState::GS_Default;
     Unit = nullptr;
 }
 
 void AGameSlot::BeginPlay()
 {
     Super::BeginPlay();
-    OnClicked.AddUniqueDynamic(this, &AGameSlot::OnGridClicked);
-    SetState(EGridState::GS_Default);
+    OnClicked.AddDynamic(this, &AGameSlot::OnGridClicked);
 }
 
 void AGameSlot::SetState(EGridState NewState)
 {
     GridState = NewState;
-
+    UMaterialInterface* TargetMat = nullptr;
     switch (NewState)
     {
-    case EGridState::GS_Default:
-        if (Mat_Default) Plane->SetMaterial(0, Mat_Default);
-        break;
-    case EGridState::GS_Highlighted:
-        if (Mat_Highlighted) Plane->SetMaterial(0, Mat_Highlighted);
-        break;
-    case EGridState::GS_Offensive:
-        if (Mat_Offensive) Plane->SetMaterial(0, Mat_Offensive);
-        break;
-    case EGridState::GS_Supportive:
-        if (Mat_Supportive) Plane->SetMaterial(0, Mat_Supportive);
-        break;
+    case EGridState::GS_Default: TargetMat = Mat_Default; break;
+    case EGridState::GS_Highlighted: TargetMat = Mat_Highlighted; break;
+    case EGridState::GS_Offensive: TargetMat = Mat_Offensive; break;
+    case EGridState::GS_Supportive: TargetMat = Mat_Supportive; break;
+    }
+    if (TargetMat && Plane)
+    {
+        Plane->SetMaterial(0, TargetMat);
     }
 }
 
 void AGameSlot::SpawnUnitHere(TSubclassOf<AUnitBase> UnitClass)
 {
-    FVector Location = GetActorLocation();
-    AUnitBase* NewUnit = Cast<AUnitBase>(GetWorld()->SpawnActor(UnitClass, &Location));
-    if (NewUnit) NewUnit->AssignToSlot(this);
+    if (!UnitClass) return;
+
+    FActorSpawnParameters SpawnParams;
+    AUnitBase* NewUnit = GetWorld()->SpawnActor<AUnitBase>(
+        UnitClass, GetActorLocation(), GetActorRotation(), SpawnParams);
+
+    if (NewUnit)
+    {
+        NewUnit->AssignToSlot(this);
+    }
 }
 
 void AGameSlot::OnGridClicked(AActor* TouchedActor, FKey ButtonPressed)
 {
-    if (auto PlayerController = GetWorld()->GetFirstPlayerController<ATBPlayerController>())
+    if (auto PC = GetWorld()->GetFirstPlayerController<ATBPlayerController>())
     {
-        PlayerController->OnActorClicked(this, ButtonPressed);
+        PC->OnActorClicked(this, ButtonPressed);
     }
 }
 

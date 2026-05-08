@@ -1,5 +1,5 @@
 #include "UnitBase.h"
-#include "GameSlot.h"  // .cpp'de include
+#include "GameSlot.h"
 
 AUnitBase::AUnitBase()
 {
@@ -18,18 +18,15 @@ void AUnitBase::AssignToSlot(AGameSlot* NewSlot)
         UE_LOG(LogTemp, Error, TEXT("AssignToSlot: NewSlot is nullptr!"));
         return;
     }
-    
-    // Eğer eski slotumuz varsa, onu temizle
+
     if (Slot)
     {
         Slot->Unit = nullptr;
     }
-    
-    // Yeni slota geç
+
     Slot = NewSlot;
     Slot->Unit = this;
-    
-    // Konumu güncelle
+
     SetActorLocation(Slot->GetActorLocation() + StartOffset);
 }
 

@@ -3,26 +3,25 @@
 #include "GameFramework/Actor.h"
 #include "UnitBase.generated.h"
 
-class AGameSlot;  // Forward declare — circular dependency fix
+class AGameSlot;
 
 UCLASS()
 class LABWORK2_API AUnitBase : public AActor
 {
     GENERATED_BODY()
-
 public:
     AUnitBase();
-
-    void AssignToSlot(AGameSlot* NewSlot);
-
-    UFUNCTION(BlueprintImplementableEvent, BlueprintPure)
-    bool IsControlledByThePlayer();
 
     UPROPERTY(EditAnywhere)
     FVector StartOffset;
 
-    UPROPERTY(VisibleAnywhere)
+    UPROPERTY()
     AGameSlot* Slot;
+
+    void AssignToSlot(AGameSlot* NewSlot);
+
+    UFUNCTION(BlueprintImplementableEvent)
+    bool IsControlledByThePlayer();
 
 protected:
     virtual void BeginPlay() override;
