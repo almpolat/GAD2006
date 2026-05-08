@@ -1,7 +1,8 @@
 #include "GameManager.h"
+#include "GameGrid.h"
+#include "GameSlot.h"
 #include "TBPlayerController.h"
 #include "MoveCommand.h"
-#include "GameSlot.h"
 
 AGameManager::AGameManager()
 {
@@ -17,65 +18,69 @@ void AGameManager::BeginPlay()
     {
         PlayerController->GameManager = this;
     }
-    if (Levels.IsValidIndex(CurrentLevel))
-    {
-        CreateLevelActors(Levels[CurrentLevel]);
-    }
+
+    GetWorld()->GetTimerManager().SetTimerForNextTick([this]()
+        {
+            if (Levels.IsValidIndex(CurrentLevel))
+            {
+                CreateLevelActors(Levels[CurrentLevel]);
+            }
+        });
 }
 
 void AGameManager::OnActorClicked(AActor* Actor, FKey button)
 {
     if (CurrentCommand.IsValid() && CurrentCommand->IsExecuting()) return;
-    
+
     AGameSlot* Slot = Cast<AGameSlot>(Actor);
     if (!Slot) return;
-    
+
     if (!ThePlayer)
     {
         UE_LOG(LogTemp, Error, TEXT("No Player Unit Detected!"));
         return;
     }
-    
+
     if (!ThePlayer->Slot)
     {
         UE_LOG(LogTemp, Error, TEXT("Player has no slot assigned!"));
         return;
     }
-    
-    if (Slot->Unit == nullptr)
-    {
-        UE_LOG(LogTemp, Warning, TEXT("Moving from (%d,%d) to (%d,%d)"), 
-            ThePlayer->Slot->GridPosition.Row, ThePlayer->Slot->GridPosition.Col,
-            Slot->GridPosition.Row, Slot->GridPosition.Col);
-        
-        TSharedRef<MoveCommand> Cmd = MakeShared<MoveCommand>(
-            ThePlayer->Slot->GridPosition, 
-            Slot->GridPosition, 
-            GameGrid
-        );
-        
-        CommandPool.Add(Cmd);
-        Cmd->Execute();
-        CurrentCommand = Cmd;
-    }
+
+    if (Slot == ThePlayer->Slot) return;
+    if (Slot->Unit != nullptr) return;
+
+    UE_LOG(LogTemp, Warning, TEXT("Moving from (%d,%d) to (%d,%d)"),
+        ThePlayer->Slot->GridPosition.Row, ThePlayer->Slot->GridPosition.Col,
+        Slot->GridPosition.Row, Slot->GridPosition.Col);
+
+    TSharedRef<MoveCommand> Cmd = MakeShared<MoveCommand>(
+        ThePlayer->Slot->GridPosition,
+        Slot->GridPosition,
+        GameGrid
+    );
+
+    CommandPool.Add(Cmd);
+    Cmd->Execute();
+    CurrentCommand = Cmd;
 }
 
 void AGameManager::CreateLevelActors(FSLevelInfo& Info)
 {
     ThePlayer = nullptr;
-    
+
     UE_LOG(LogTemp, Warning, TEXT("=== Creating Level Actors ==="));
     UE_LOG(LogTemp, Warning, TEXT("Unit count: %d"), Info.Units.Num());
-    
+
     for (const auto& UnitInfo : Info.Units)
     {
         if (AGameSlot* Slot = GameGrid->GetSlot(UnitInfo.StartPosition))
         {
-            UE_LOG(LogTemp, Warning, TEXT("Spawning at Row:%d Col:%d"), 
+            UE_LOG(LogTemp, Warning, TEXT("Spawning at Row:%d Col:%d"),
                 UnitInfo.StartPosition.Row, UnitInfo.StartPosition.Col);
-            
+
             Slot->SpawnUnitHere(UnitInfo.UnitClass);
-            
+
             if (Slot->Unit && Slot->Unit->IsControlledByThePlayer())
             {
                 ThePlayer = Slot->Unit;
@@ -83,7 +88,7 @@ void AGameManager::CreateLevelActors(FSLevelInfo& Info)
             }
         }
     }
-    
+
     if (!ThePlayer)
     {
         UE_LOG(LogTemp, Error, TEXT("NO PLAYER UNIT WAS SET!"));

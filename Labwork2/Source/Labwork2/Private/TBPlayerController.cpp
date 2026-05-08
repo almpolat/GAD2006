@@ -3,18 +3,24 @@
 
 ATBPlayerController::ATBPlayerController()
 {
+    bShowMouseCursor = true;
+    bEnableClickEvents = true;
+    bEnableMouseOverEvents = true;
 }
 
 void ATBPlayerController::BeginPlay()
 {
     Super::BeginPlay();
-    bEnableClickEvents = true;
-    bShowMouseCursor = true;
-    ClickEventKeys.AddUnique(EKeys::RightMouseButton);
 }
 
-void ATBPlayerController::OnActorClicked(AActor* Actor, FKey key)
+void ATBPlayerController::OnActorClicked(AActor* Actor, FKey button)
 {
-    UE_LOG(LogTemp, Warning, TEXT("OnClicked: %s - %s"), *Actor->GetActorLabel(), *key.ToString());
-    if (GameManager) GameManager->OnActorClicked(Actor, key);
+    UE_LOG(LogTemp, Warning, TEXT("OnClicked: %s - %s"),
+        Actor ? *Actor->GetName() : TEXT("NULL"),
+        *button.ToString());
+
+    if (GameManager)
+    {
+        GameManager->OnActorClicked(Actor, button);
+    }
 }

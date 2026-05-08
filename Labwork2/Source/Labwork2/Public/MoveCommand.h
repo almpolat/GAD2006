@@ -1,7 +1,7 @@
 #pragma once
+#include "Command.h"
 #include "GameGrid.h"
 #include "GameSlot.h"
-#include "Command.h"
 
 class MoveCommand : public Command
 {
