@@ -1,0 +1,40 @@
+#include "NetAvatar.h"
+#include "GameFramework/CharacterMovementComponent.h"
+
+ANetAvatar::ANetAvatar()
+	: MovementScale(1.0f)
+{
+	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
+	SpringArm->SetupAttachment(RootComponent);
+
+	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
+}
+
+void ANetAvatar::BeginPlay()
+{
+	Super::BeginPlay();
+}
+
+void ANetAvatar::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	PlayerInputComponent->BindAxis("MoveForward", this, &ANetAvatar::MoveForward);
+	PlayerInputComponent->BindAxis("MoveRight", this, &ANetAvatar::MoveRight);
+}
+
+void ANetAvatar::MoveForward(float Scale)
+{
+	FRotator Rotation = GetController()->GetControlRotation();
+	FRotator YawRotation(0.0f, Rotation.Yaw, 0.0f);
+	FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+	AddMovementInput(ForwardDirection, MovementScale * Scale);
+}
+
+void ANetAvatar::MoveRight(float Scale)
+{
+	FRotator Rotation = GetController()->GetControlRotation();
+	FRotator YawRotation(0.0f, Rotation.Yaw, 0.0f);
+	FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+	AddMovementInput(RightDirection, MovementScale * Scale);
+}
