@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameStateBase.h"
+#include "NetGameInstance.h"
 #include "NetGameState.generated.h"
 
 class ANetPlayerState;
@@ -9,42 +10,36 @@ class ANetPlayerState;
 UCLASS()
 class LABWORK4_API ANetGameState : public AGameStateBase
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
-	ANetGameState();
+    ANetGameState() : WinningPlayer(-1), MatchTimeRemaining(30.0f), bMatchTimerActive(false) {}
 
-	UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Winner)
-	int WinningPlayer;
+    virtual void GetLifetimeReplicatedProps(
+        TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-	UPROPERTY(BlueprintReadOnly, Replicated)
-	float MatchTimeRemaining;
+    UPROPERTY(BlueprintReadOnly, ReplicatedUsing = OnRep_Winner)
+    int WinningPlayer;
 
-	UPROPERTY(BlueprintReadOnly, Replicated)
-	bool bMatchTimerActive;
+    UFUNCTION()
+    void OnRep_Winner();
 
-	UFUNCTION(BlueprintCallable)
-	void StartMatchTimer();
+    UFUNCTION(BlueprintImplementableEvent)
+    void OnVictory();
 
-	UFUNCTION()
-	void OnMatchTimerTick();
+    UFUNCTION(BlueprintImplementableEvent)
+    void OnRestart();
 
-	FTimerHandle MatchTimerHandle;
+    UFUNCTION(NetMulticast, Reliable)
+    void TriggerRestart();
 
-	UFUNCTION()
-	void OnRep_Winner();
+    UFUNCTION(BlueprintCallable)
+    ANetPlayerState* GetPlayerStateByIndex(int PlayerIndex);
 
-	UFUNCTION(BlueprintImplementableEvent)
-	void OnVictory();
+    // Assignment: 30 second timer visible to all players
+    UPROPERTY(Replicated, BlueprintReadOnly)
+    float MatchTimeRemaining;
 
-	UFUNCTION(BlueprintImplementableEvent)
-	void OnRestart();
-
-	UFUNCTION(NetMulticast, Reliable)
-	void TriggerRestart();
-
-	UFUNCTION(BlueprintCallable)
-	ANetPlayerState* GetPlayerStateByIndex(int PlayerIndex);
-
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+    UPROPERTY(Replicated, BlueprintReadOnly)
+    bool bMatchTimerActive;
 };

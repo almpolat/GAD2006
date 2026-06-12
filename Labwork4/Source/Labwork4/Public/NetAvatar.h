@@ -4,29 +4,40 @@
 #include "NetBaseCharacter.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Net/UnrealNetwork.h"
 #include "NetAvatar.generated.h"
 
 UCLASS()
 class LABWORK4_API ANetAvatar : public ANetBaseCharacter
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
 public:
-	ANetAvatar();
+    ANetAvatar();
 
-	virtual void BeginPlay() override;
-	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
+    UPROPERTY(EditAnywhere)
+    UCameraComponent* Camera;
 
-	UPROPERTY(EditAnywhere)
-	USpringArmComponent* SpringArm;
+    UPROPERTY(EditAnywhere)
+    USpringArmComponent* SpringArm;
 
-	UPROPERTY(EditAnywhere)
-	UCameraComponent* Camera;
+    virtual void BeginPlay() override;
+    virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
+    virtual void GetLifetimeReplicatedProps(
+        TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-	UPROPERTY(BlueprintReadWrite)
-	float MovementScale;
+    UPROPERTY(BlueprintReadWrite)
+    float MovementScale;
+
+    UPROPERTY(ReplicatedUsing = OnRep_bRunning, BlueprintReadWrite)
+    bool bRunning;
+
+    UFUNCTION()
+    void OnRep_bRunning();
 
 private:
-	void MoveForward(float Scale);
-	void MoveRight(float Scale);
+    void MoveForward(float Amount);
+    void MoveRight(float Amount);
+    void StartRun();
+    void StopRun();
 };
