@@ -182,4 +182,5 @@ void ANetGameMode::EndGame()
     }
 
     if (GState) GState->TriggerRestart();
+    StartMatchTimer();
 }
