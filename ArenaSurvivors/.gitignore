@@ -9,5 +9,10 @@ Content/Characters/
 Content/Meshes/
 Content/StarterContent/
 Content/LevelPrototyping/
+Content/ThirdPerson/
+Content/Variant_Combat/
+Content/Variant_Platforming/
+Content/Variant_SideScrolling/
+Content/Input/
 *.VC.db
 *.VC.opendb
