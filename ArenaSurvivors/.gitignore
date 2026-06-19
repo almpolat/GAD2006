@@ -1,0 +1,13 @@
+Saved/
+Binaries/
+Intermediate/
+DerivedDataCache/
+.vs/
+__ExternalActors__/
+__ExternalObjects__/
+Content/Characters/
+Content/Meshes/
+Content/StarterContent/
+Content/LevelPrototyping/
+*.VC.db
+*.VC.opendb
