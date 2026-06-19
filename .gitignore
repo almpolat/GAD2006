@@ -405,4 +405,26 @@ Labwork3/Content/Materials/
 Labwork3/Content/Models/
 Labwork3/Content/Textures/
 Labwork3/Content/UI/
- 
+
+# Labwork4 - UE5 ignored folders
+Labwork4/Binaries/
+Labwork4/Intermediate/
+Labwork4/DerivedDataCache/
+Labwork4/Saved/
+Labwork4/.vs/
+Labwork4/Labwork4.sln
+Labwork4/.vsconfig
+Labwork4/Content/Collections/
+Labwork4/Content/Developers/
+Labwork4/Content/__ExternalActors__/
+Labwork4/Content/__ExternalObjects__/
+Labwork4/Content/StarterContent/
+Labwork4/Content/Characters/
+Labwork4/Content/LevelPrototyping/
+Labwork4/Content/StylizedModularChar/
+Labwork4/Content/Animations/
+Labwork4/Content/ThirdPerson/
+Labwork4/Content/Meshes/
+Labwork4/Content/Textures/
+Labwork4/Content/Materials/
+Labwork4/Content/AM_Dash/
