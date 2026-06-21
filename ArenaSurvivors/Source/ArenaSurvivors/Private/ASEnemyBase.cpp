@@ -3,6 +3,7 @@
 #include "ASBaseCharacter.h"
 #include "ASPlayerState.h"
 #include "GameFramework/PlayerController.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/Engine.h"
 #include "TimerManager.h"
@@ -16,6 +17,9 @@ AASEnemyBase::AASEnemyBase()
 
     AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
     AIControllerClass = AASAIController::StaticClass();
+
+    // Düþman hýzýný düþür
+    GetCharacterMovement()->MaxWalkSpeed = 200.f;
 }
 
 void AASEnemyBase::BeginPlay()
@@ -57,7 +61,6 @@ void AASEnemyBase::Die()
 {
     Super::Die();
 
-    // Skoru kazanan oyuncuya ver
     TArray<AActor*> Controllers;
     UGameplayStatics::GetAllActorsOfClass(
         GetWorld(),
@@ -78,7 +81,6 @@ void AASEnemyBase::Die()
         }
     }
 
-    // 2 saniye sonra yok et
     SetActorHiddenInGame(true);
     SetActorEnableCollision(false);
 

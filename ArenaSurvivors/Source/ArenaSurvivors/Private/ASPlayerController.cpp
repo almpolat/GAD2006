@@ -42,7 +42,6 @@ void AASPlayerController::ClientShowEndScreen_Implementation(bool bVictory)
 {
     if (!EndScreenWidgetClass) return;
 
-    // HUD'u kapat
     if (HUDWidgetInstance)
     {
         HUDWidgetInstance->RemoveFromParent();
@@ -55,10 +54,18 @@ void AASPlayerController::ClientShowEndScreen_Implementation(bool bVictory)
 
     if (EndScreenWidgetInstance)
     {
+        // bIsVictory deðiþkenini direkt set et
+        FBoolProperty* VictoryProp = FindFProperty<FBoolProperty>(
+            EndScreenWidgetInstance->GetClass(), TEXT("bIsVictory"));
+        if (VictoryProp)
+        {
+            VictoryProp->SetPropertyValue_InContainer(EndScreenWidgetInstance, bVictory);
+        }
+
+        // Viewport'a ekle — Event Construct burada tetiklenir
         EndScreenWidgetInstance->AddToViewport();
     }
 
-    // Mouse cursor göster
     SetShowMouseCursor(true);
     SetInputMode(FInputModeUIOnly());
 }

@@ -42,17 +42,10 @@ void AASRangedEnemy::PerformAttack()
     AASAIController* AIC = Cast<AASAIController>(GetController());
     if (!AIC || !AIC->CurrentTarget) return;
 
-    // Þimdilik direkt hasar ver (projectile ilerleyen fazda)
     AASBaseCharacter* Target = Cast<AASBaseCharacter>(AIC->CurrentTarget);
     if (Target)
     {
         Target->TakeDamage_AS(AttackDamage);
-
-        if (GEngine)
-        {
-            GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red,
-                TEXT("Ranged Enemy attacked!"));
-        }
     }
 
     bCanAttack = false;

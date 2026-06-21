@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "ASGameState.h"
 #include "ASGameMode.generated.h"
 
 UCLASS()
@@ -14,7 +15,6 @@ public:
 
     virtual void BeginPlay() override;
 
-    // Dalga sistemi
     UFUNCTION(BlueprintCallable, Category = "Wave")
     void StartNextWave();
 
@@ -24,24 +24,28 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Wave")
     void EndGame(bool bPlayersWon);
 
-    // Spawn edilecek düþman sýnýflarý (Blueprint'te atanacak)
+    UFUNCTION(BlueprintCallable, Category = "Wave")
+    void OnPlayerDied();
+
     UPROPERTY(EditDefaultsOnly, Category = "Wave")
     TSubclassOf<AActor> MeleeEnemyClass;
 
     UPROPERTY(EditDefaultsOnly, Category = "Wave")
     TSubclassOf<AActor> RangedEnemyClass;
 
-    // Her dalgada kaç düþman spawn olur
     UPROPERTY(EditDefaultsOnly, Category = "Wave")
     int32 BaseEnemyCount;
 
-    // Her dalgada kaç düþman eklenir
     UPROPERTY(EditDefaultsOnly, Category = "Wave")
     int32 EnemyCountIncrement;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Wave")
+    int32 MaxWaves;
 
 protected:
     int32 CurrentWave;
     int32 AliveEnemyCount;
+    int32 DeadPlayerCount;
 
     void SpawnEnemiesForWave();
 

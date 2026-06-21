@@ -15,7 +15,7 @@ AASAvatar::AASAvatar()
     SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
     SpringArm->SetupAttachment(RootComponent);
     SpringArm->TargetArmLength = 600.f;
-    SpringArm->SetRelativeRotation(FRotator(-50.f, 0.f, 0.f));
+    SpringArm->SetRelativeRotation(FRotator(-60.f, 0.f, 0.f));
     SpringArm->bUsePawnControlRotation = false;
     SpringArm->bInheritPitch = false;
     SpringArm->bInheritYaw = false;
@@ -28,7 +28,7 @@ AASAvatar::AASAvatar()
 
     // Hareket
     bUseControllerRotationYaw = false;
-    GetCharacterMovement()->bOrientRotationToMovement = true;
+    GetCharacterMovement()->bOrientRotationToMovement = false;
     GetCharacterMovement()->RotationRate = FRotator(0.f, 540.f, 0.f);
     GetCharacterMovement()->MaxWalkSpeed = 500.f;
 
@@ -67,7 +67,10 @@ void AASAvatar::MoveForward(float Value)
 {
     if (bIsDead || FMath::IsNearlyZero(Value)) return;
 
-    const FVector Direction = FVector(1.f, 0.f, 0.f);
+    // Karakterin baktýðý yöne göre hareket
+    FVector Direction = GetActorForwardVector();
+    Direction.Z = 0.f;
+    Direction.Normalize();
     AddMovementInput(Direction, Value);
 }
 
@@ -75,7 +78,10 @@ void AASAvatar::MoveRight(float Value)
 {
     if (bIsDead || FMath::IsNearlyZero(Value)) return;
 
-    const FVector Direction = FVector(0.f, 1.f, 0.f);
+    // Karakterin sað yönüne göre hareket
+    FVector Direction = GetActorRightVector();
+    Direction.Z = 0.f;
+    Direction.Normalize();
     AddMovementInput(Direction, Value);
 }
 
@@ -83,11 +89,10 @@ void AASAvatar::Dash()
 {
     if (!bCanDash || bIsDead) return;
 
-    FVector DashDirection = GetVelocity().GetSafeNormal();
-    if (DashDirection.IsNearlyZero())
-    {
-        DashDirection = GetActorForwardVector();
-    }
+    // Karakterin baktýðý yöne dash
+    FVector DashDirection = GetActorForwardVector();
+    DashDirection.Z = 0.f;
+    DashDirection.Normalize();
 
     Server_Dash(DashDirection);
 }
@@ -128,8 +133,6 @@ void AASAvatar::Server_MeleeAttack_Implementation()
     bIsAttacking = true;
     PerformMeleeTrace();
 
-    // Saldýrý animasyonu ilerleyen fazda eklenecek
-    // Þimdilik 0.5 saniye sonra sýfýrla
     FTimerHandle AttackTimer;
     GetWorldTimerManager().SetTimer(AttackTimer, [this]()
         {
@@ -170,6 +173,5 @@ void AASAvatar::PerformMeleeTrace()
         }
     }
 
-    // Debug çizgisi (geliþtirme sýrasýnda görünür)
     DrawDebugSphere(GetWorld(), End, 50.f, 8, FColor::Red, false, 0.5f);
 }
