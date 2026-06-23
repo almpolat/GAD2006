@@ -5,6 +5,7 @@ UASGameInstance::UASGameInstance()
 {
     PlayerNickname = TEXT("Player");
     CostumeIndex = 0;
+    CostumeRowName = FName("Costume1");
 }
 
 void UASGameInstance::HostGame()

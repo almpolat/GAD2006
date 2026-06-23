@@ -12,21 +12,21 @@ class ARENASURVIVORS_API UASGameInstance : public UGameInstance
 public:
     UASGameInstance();
 
-    // Oyuncu bilgileri
     UPROPERTY(BlueprintReadWrite, Category = "Player Info")
     FString PlayerNickname;
 
     UPROPERTY(BlueprintReadWrite, Category = "Player Info")
     int32 CostumeIndex;
 
-    // Host / Join
+    UPROPERTY(BlueprintReadWrite, Category = "Player Info")
+    FName CostumeRowName;
+
     UFUNCTION(BlueprintCallable, Category = "Network")
     void HostGame();
 
     UFUNCTION(BlueprintCallable, Category = "Network")
     void JoinGame(const FString& IPAddress);
 
-    // Level travel
     UFUNCTION(BlueprintCallable, Category = "Network")
     void TravelToArena();
 };
