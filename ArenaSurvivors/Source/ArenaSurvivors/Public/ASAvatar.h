@@ -46,7 +46,6 @@ public:
 
     // Input fonksiyonlarý
     void MoveForward(float Value);
-    void MoveRight(float Value);
 
     UFUNCTION(BlueprintCallable, Category = "Dash")
     void Dash();

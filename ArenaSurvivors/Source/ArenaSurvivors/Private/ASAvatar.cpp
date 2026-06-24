@@ -58,7 +58,6 @@ void AASAvatar::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
     Super::SetupPlayerInputComponent(PlayerInputComponent);
 
     PlayerInputComponent->BindAxis("MoveForward", this, &AASAvatar::MoveForward);
-    PlayerInputComponent->BindAxis("MoveRight", this, &AASAvatar::MoveRight);
     PlayerInputComponent->BindAction("Dash", IE_Pressed, this, &AASAvatar::Dash);
     PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &AASAvatar::MeleeAttack);
 }
@@ -67,19 +66,7 @@ void AASAvatar::MoveForward(float Value)
 {
     if (bIsDead || FMath::IsNearlyZero(Value)) return;
 
-    // Karakterin baktýðý yöne göre hareket
     FVector Direction = GetActorForwardVector();
-    Direction.Z = 0.f;
-    Direction.Normalize();
-    AddMovementInput(Direction, Value);
-}
-
-void AASAvatar::MoveRight(float Value)
-{
-    if (bIsDead || FMath::IsNearlyZero(Value)) return;
-
-    // Karakterin sað yönüne göre hareket
-    FVector Direction = GetActorRightVector();
     Direction.Z = 0.f;
     Direction.Normalize();
     AddMovementInput(Direction, Value);
@@ -89,7 +76,6 @@ void AASAvatar::Dash()
 {
     if (!bCanDash || bIsDead) return;
 
-    // Karakterin baktýðý yöne dash
     FVector DashDirection = GetActorForwardVector();
     DashDirection.Z = 0.f;
     DashDirection.Normalize();
