@@ -14,11 +14,9 @@ public:
 
     virtual void BeginPlay() override;
 
-    // HUD widget sýnýfý (Blueprint'te atanacak)
     UPROPERTY(EditDefaultsOnly, Category = "UI")
     TSubclassOf<UUserWidget> HUDWidgetClass;
 
-    // EndScreen widget sýnýfý (Blueprint'te atanacak)
     UPROPERTY(EditDefaultsOnly, Category = "UI")
     TSubclassOf<UUserWidget> EndScreenWidgetClass;
 
@@ -30,6 +28,9 @@ public:
 
     UFUNCTION(Client, Reliable, BlueprintCallable, Category = "UI")
     void ClientShowEndScreen(bool bVictory);
+
+    UFUNCTION(Client, Reliable, Category = "Spectator")
+    void ClientSpectatePlayer(AActor* Target);
 
 private:
     UPROPERTY()

@@ -22,7 +22,7 @@ public:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stats")
     float MaxHealth;
 
-    UPROPERTY(Replicated, BlueprintReadOnly, Category = "Stats")
+    UPROPERTY(Replicated, BlueprintReadWrite, Category = "Stats")
     bool bIsDead;
 
     // Hasar alma

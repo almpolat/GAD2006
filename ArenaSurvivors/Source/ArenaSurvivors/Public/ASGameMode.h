@@ -19,13 +19,13 @@ public:
     void StartNextWave();
 
     UFUNCTION(BlueprintCallable, Category = "Wave")
-    void OnEnemyKilled();
+    void OnEnemyKilled(APlayerController* Killer, bool bWasMeleeEnemy);
 
     UFUNCTION(BlueprintCallable, Category = "Wave")
     void EndGame(bool bPlayersWon);
 
     UFUNCTION(BlueprintCallable, Category = "Wave")
-    void OnPlayerDied();
+    void OnPlayerDied(APlayerController* DeadPlayerController);
 
     UPROPERTY(EditDefaultsOnly, Category = "Wave")
     TSubclassOf<AActor> MeleeEnemyClass;
@@ -45,7 +45,9 @@ public:
 protected:
     int32 CurrentWave;
     int32 AliveEnemyCount;
-    int32 DeadPlayerCount;
+    int32 AlivePlayerCount;
+    bool bGameStarted;
+    bool bGameEnded;
 
     void SpawnEnemiesForWave();
 

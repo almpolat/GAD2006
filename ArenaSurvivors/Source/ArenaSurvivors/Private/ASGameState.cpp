@@ -7,6 +7,9 @@ AASGameState::AASGameState()
     CurrentWave = 0;
     GamePhase = EGamePhase::WaitingToStart;
     WaveTimer = 0.f;
+    TotalKills = 0;
+    MeleeEnemyKills = 0;
+    RangedEnemyKills = 0;
 }
 
 void AASGameState::GetLifetimeReplicatedProps(
@@ -17,6 +20,9 @@ void AASGameState::GetLifetimeReplicatedProps(
     DOREPLIFETIME(AASGameState, CurrentWave);
     DOREPLIFETIME(AASGameState, GamePhase);
     DOREPLIFETIME(AASGameState, WaveTimer);
+    DOREPLIFETIME(AASGameState, TotalKills);
+    DOREPLIFETIME(AASGameState, MeleeEnemyKills);
+    DOREPLIFETIME(AASGameState, RangedEnemyKills);
 }
 
 void AASGameState::OnRep_CurrentWave()
@@ -30,7 +36,6 @@ void AASGameState::OnRep_CurrentWave()
 
 void AASGameState::OnRep_GamePhase()
 {
-    // HUD güncellemesi ilerleyen fazda PlayerController üzerinden yapýlacak
     if (GEngine)
     {
         GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Cyan,

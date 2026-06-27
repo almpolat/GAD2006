@@ -11,11 +11,9 @@ AASAvatar::AASAvatar()
 {
     PrimaryActorTick.bCanEverTick = true;
 
-    // Replication
     bReplicates = true;
     GetCharacterMovement()->SetIsReplicated(true);
 
-    // Spring Arm
     SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
     SpringArm->SetupAttachment(RootComponent);
     SpringArm->TargetArmLength = 600.f;
@@ -25,23 +23,18 @@ AASAvatar::AASAvatar()
     SpringArm->bInheritYaw = false;
     SpringArm->bInheritRoll = false;
 
-    // Camera
     Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
     Camera->SetupAttachment(SpringArm);
     Camera->bUsePawnControlRotation = false;
 
-    // Hareket
     bUseControllerRotationYaw = false;
     GetCharacterMovement()->bOrientRotationToMovement = false;
-    GetCharacterMovement()->RotationRate = FRotator(0.f, 540.f, 0.f);
     GetCharacterMovement()->MaxWalkSpeed = 500.f;
 
-    // Dash
     DashDistance = 1200.f;
     DashCooldown = 1.5f;
     bCanDash = true;
 
-    // Melee
     MeleeDamage = 25.f;
     MeleeRange = 120.f;
     bIsAttacking = false;
@@ -61,6 +54,9 @@ void AASAvatar::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
     Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+    // Sadece locally controlled pawn input alýr
+    if (!IsLocallyControlled()) return;
+
     PlayerInputComponent->BindAxis("MoveForward", this, &AASAvatar::MoveForward);
     PlayerInputComponent->BindAction("Dash", IE_Pressed, this, &AASAvatar::Dash);
     PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &AASAvatar::MeleeAttack);
@@ -68,6 +64,7 @@ void AASAvatar::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void AASAvatar::MoveForward(float Value)
 {
+    if (!IsLocallyControlled()) return;
     if (bIsDead || FMath::IsNearlyZero(Value)) return;
 
     FVector Direction = GetActorForwardVector();
@@ -78,6 +75,7 @@ void AASAvatar::MoveForward(float Value)
 
 void AASAvatar::Dash()
 {
+    if (!IsLocallyControlled()) return;
     if (!bCanDash || bIsDead) return;
 
     FVector DashDirection = GetActorForwardVector();
@@ -90,16 +88,9 @@ void AASAvatar::Dash()
 void AASAvatar::Server_Dash_Implementation(FVector Direction)
 {
     bCanDash = false;
-
     LaunchCharacter(Direction * DashDistance, true, true);
-
     GetWorldTimerManager().SetTimer(
-        DashCooldownTimer,
-        this,
-        &AASAvatar::ResetDash,
-        DashCooldown,
-        false
-    );
+        DashCooldownTimer, this, &AASAvatar::ResetDash, DashCooldown, false);
 }
 
 bool AASAvatar::Server_Dash_Validate(FVector Direction)
@@ -114,6 +105,7 @@ void AASAvatar::ResetDash()
 
 void AASAvatar::MeleeAttack()
 {
+    if (!IsLocallyControlled()) return;
     if (bIsAttacking || bIsDead) return;
     Server_MeleeAttack();
 }
@@ -145,14 +137,8 @@ void AASAvatar::PerformMeleeTrace()
     Params.AddIgnoredActor(this);
 
     bool bHit = GetWorld()->SweepSingleByChannel(
-        HitResult,
-        Start,
-        End,
-        FQuat::Identity,
-        ECC_Pawn,
-        FCollisionShape::MakeSphere(50.f),
-        Params
-    );
+        HitResult, Start, End, FQuat::Identity,
+        ECC_Pawn, FCollisionShape::MakeSphere(50.f), Params);
 
     if (bHit)
     {

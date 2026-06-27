@@ -1,6 +1,7 @@
 ﻿#include "ASGameMode.h"
 #include "ASGameState.h"
 #include "ASPlayerController.h"
+#include "ASPlayerState.h"
 #include "Engine/World.h"
 #include "Engine/Engine.h"
 #include "TimerManager.h"
@@ -11,23 +12,33 @@ AASGameMode::AASGameMode()
 {
     CurrentWave = 0;
     AliveEnemyCount = 0;
-    DeadPlayerCount = 0;
+    AlivePlayerCount = 0;
     BaseEnemyCount = 3;
     EnemyCountIncrement = 2;
     MaxWaves = 10;
+    bGameStarted = false;
+    bGameEnded = false;
 }
 
 void AASGameMode::BeginPlay()
 {
     Super::BeginPlay();
-    // Wave artık kapıdan tetikleniyor, burada başlatmıyoruz
-}   
+    AlivePlayerCount = 0;
+    if (GEngine)
+    {
+        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan,
+            TEXT("ArenaMap loaded. Waiting for players to exit door..."));
+    }
+}
 
 void AASGameMode::StartNextWave()
 {
+    if (bGameEnded) return;
+
+    bGameStarted = true;
+    AlivePlayerCount = GetNumPlayers();
     CurrentWave++;
 
-    // 10 dalga tamamlandı → Victory
     if (CurrentWave > MaxWaves)
     {
         EndGame(true);
@@ -70,7 +81,6 @@ void AASGameMode::SpawnEnemiesForWave()
 
         FRotator SpawnRotation = FRotator::ZeroRotator;
 
-        // Dalgaya göre ranged düşman ekle
         if (i % 3 == 2 && RangedEnemyClass)
         {
             World->SpawnActor<AActor>(RangedEnemyClass, SpawnLocation, SpawnRotation);
@@ -82,13 +92,35 @@ void AASGameMode::SpawnEnemiesForWave()
     }
 }
 
-void AASGameMode::OnEnemyKilled()
+void AASGameMode::OnEnemyKilled(APlayerController* Killer, bool bWasMeleeEnemy)
 {
+    if (bGameEnded) return;
+
     AliveEnemyCount--;
+
+    // Kill istatistiklerini güncelle
+    AASGameState* GS = GetGameState<AASGameState>();
+    if (GS)
+    {
+        GS->TotalKills++;
+        if (bWasMeleeEnemy)
+            GS->MeleeEnemyKills++;
+        else
+            GS->RangedEnemyKills++;
+    }
+
+    // Killer PlayerState'e kill ekle
+    if (Killer)
+    {
+        AASPlayerState* PS = Killer->GetPlayerState<AASPlayerState>();
+        if (PS)
+        {
+            PS->AddKill();
+        }
+    }
 
     if (AliveEnemyCount <= 0)
     {
-        AASGameState* GS = GetGameState<AASGameState>();
         if (GS)
         {
             GS->GamePhase = EGamePhase::BetweenWaves;
@@ -110,28 +142,70 @@ void AASGameMode::OnEnemyKilled()
     }
 }
 
-void AASGameMode::OnPlayerDied()
+void AASGameMode::OnPlayerDied(APlayerController* DeadPlayerController)
 {
-    DeadPlayerCount++;
+    if (bGameEnded) return;
 
-    // Kaç oyuncu var
-    int32 TotalPlayers = GetNumPlayers();
+    // Yaşayan oyuncu ara
+    AActor* AliveTarget = nullptr;
 
-    if (DeadPlayerCount >= TotalPlayers)
+    for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
     {
+        APlayerController* PC = It->Get();
+
+        // Ölen oyuncuyu atla
+        if (!PC || PC == DeadPlayerController) continue;
+
+        // Bu oyuncunun pawn'ı var mı?
+        APawn* AlivePawn = PC->GetPawn();
+        if (AlivePawn)
+        {
+            AliveTarget = AlivePawn;
+            break;
+        }
+    }
+
+    if (AliveTarget)
+    {
+        // Hala yaşayan var → spectator yap
+        AASPlayerController* DeadPC = Cast<AASPlayerController>(DeadPlayerController);
+        if (DeadPC)
+        {
+            DeadPC->ClientSpectatePlayer(AliveTarget);
+        }
+
+        if (GEngine)
+        {
+            GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow,
+                TEXT("One player died. Other player continues!"));
+        }
+    }
+    else
+    {
+        // Hiç yaşayan yok → Defeat
+        if (GEngine)
+        {
+            GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red,
+                TEXT("Both players dead! Game Over."));
+        }
+
         EndGame(false);
     }
 }
 
 void AASGameMode::EndGame(bool bPlayersWon)
 {
+    if (bGameEnded) return;
+    bGameEnded = true;
+
+    GetWorldTimerManager().ClearTimer(WaveStartTimerHandle);
+
     AASGameState* GS = GetGameState<AASGameState>();
     if (GS)
     {
         GS->GamePhase = bPlayersWon ? EGamePhase::Victory : EGamePhase::Defeat;
     }
 
-    // Tüm PlayerController'lara EndScreen göster
     for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
     {
         AASPlayerController* PC = Cast<AASPlayerController>(It->Get());

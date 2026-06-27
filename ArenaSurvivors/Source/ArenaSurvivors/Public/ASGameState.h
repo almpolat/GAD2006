@@ -34,6 +34,15 @@ public:
     UPROPERTY(Replicated, BlueprintReadOnly, Category = "Game")
     float WaveTimer;
 
+    UPROPERTY(Replicated, BlueprintReadOnly, Category = "Stats")
+    int32 TotalKills;
+
+    UPROPERTY(Replicated, BlueprintReadOnly, Category = "Stats")
+    int32 MeleeEnemyKills;
+
+    UPROPERTY(Replicated, BlueprintReadOnly, Category = "Stats")
+    int32 RangedEnemyKills;
+
     UFUNCTION()
     void OnRep_CurrentWave();
 

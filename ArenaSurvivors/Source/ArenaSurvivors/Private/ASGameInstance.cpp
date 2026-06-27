@@ -1,6 +1,8 @@
 #include "ASGameInstance.h"
+
 #include "Engine/Engine.h"
-#include "Kismet/GameplayStatics.h"
+#include "Engine/World.h"
+#include "GameFramework/PlayerController.h"
 
 UASGameInstance::UASGameInstance()
 {
@@ -13,33 +15,112 @@ void UASGameInstance::HostGame()
 {
     if (GEngine)
     {
-        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Hosting game..."));
+        GEngine->AddOnScreenDebugMessage(
+            -1,
+            8.f,
+            FColor::Green,
+            TEXT("HostGame called - opening ArenaMap as listen server...")
+        );
     }
 
-    GWorld->ServerTravel(TEXT("/Game/Maps/ArenaMap?listen"));
-}
+    UWorld* World = GetWorld();
 
-void UASGameInstance::JoinGame(const FString& IPAddress)
-{
-    if (IPAddress.IsEmpty())
+    if (!World)
     {
         if (GEngine)
         {
-            GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Join failed: IP address is empty"));
+            GEngine->AddOnScreenDebugMessage(
+                -1,
+                8.f,
+                FColor::Red,
+                TEXT("HostGame failed: World is null!")
+            );
         }
         return;
     }
 
-    if (GEngine)
+    World->ServerTravel(TEXT("/Game/Maps/ArenaMap?listen"));
+}
+
+void UASGameInstance::JoinGame(const FString& IPAddress)
+{
+    FString FinalAddress = IPAddress.TrimStartAndEnd();
+
+    if (FinalAddress.IsEmpty())
     {
-        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow,
-            FString::Printf(TEXT("Joining: %s"), *IPAddress));
+        if (GEngine)
+        {
+            GEngine->AddOnScreenDebugMessage(
+                -1,
+                8.f,
+                FColor::Red,
+                TEXT("JoinGame failed: IP address is empty!")
+            );
+        }
+        return;
     }
 
-    GWorld->GetFirstPlayerController()->ClientTravel(IPAddress, ETravelType::TRAVEL_Absolute);
+    if (!FinalAddress.Contains(TEXT(":")))
+    {
+        FinalAddress += TEXT(":7777");
+    }
+
+    if (GEngine)
+    {
+        GEngine->AddOnScreenDebugMessage(
+            -1,
+            8.f,
+            FColor::Yellow,
+            FString::Printf(TEXT("JoinGame called with IP: %s"), *FinalAddress)
+        );
+    }
+
+    APlayerController* PC = GetFirstLocalPlayerController();
+
+    if (!PC)
+    {
+        if (GEngine)
+        {
+            GEngine->AddOnScreenDebugMessage(
+                -1,
+                8.f,
+                FColor::Red,
+                TEXT("JoinGame failed: PlayerController is null!")
+            );
+        }
+        return;
+    }
+
+    PC->ClientTravel(FinalAddress, ETravelType::TRAVEL_Absolute);
 }
 
 void UASGameInstance::TravelToArena()
 {
-    GWorld->ServerTravel(TEXT("/Game/Maps/ArenaMap?listen"));
+    if (GEngine)
+    {
+        GEngine->AddOnScreenDebugMessage(
+            -1,
+            8.f,
+            FColor::Cyan,
+            TEXT("TravelToArena called...")
+        );
+    }
+
+    UWorld* World = GetWorld();
+
+    if (!World)
+    {
+        if (GEngine)
+        {
+            GEngine->AddOnScreenDebugMessage(
+                -1,
+                8.f,
+                FColor::Red,
+                TEXT("TravelToArena failed: World is null!")
+            );
+        }
+        return;
+    }
+
+    World->ServerTravel(TEXT("/Game/Maps/ArenaMap?listen"));
 }

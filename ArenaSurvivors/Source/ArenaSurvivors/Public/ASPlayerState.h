@@ -15,27 +15,21 @@ public:
     virtual void GetLifetimeReplicatedProps(
         TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-    // Skor
-    UPROPERTY(Replicated, BlueprintReadOnly, Category = "Player")
+    UPROPERTY(Replicated, BlueprintReadOnly, Category = "Stats")
     int32 PlayerScore;
 
-    // Kill sayýsý
-    UPROPERTY(Replicated, BlueprintReadOnly, Category = "Player")
+    UPROPERTY(Replicated, BlueprintReadOnly, Category = "Stats")
     int32 KillCount;
 
-    // Nickname (GameInstance'tan kopyalanacak)
     UPROPERTY(Replicated, BlueprintReadWrite, Category = "Player")
     FString PlayerNickname;
 
-    // Kostüm indexi (GameInstance'tan kopyalanacak)
     UPROPERTY(Replicated, BlueprintReadWrite, Category = "Player")
     int32 CostumeIndex;
 
-    // Skor ekle
-    UFUNCTION(BlueprintCallable, Category = "Player")
+    UFUNCTION(BlueprintCallable, Category = "Stats")
     void AddScore(int32 Amount);
 
-    // Kill ekle
-    UFUNCTION(BlueprintCallable, Category = "Player")
+    UFUNCTION(BlueprintCallable, Category = "Stats")
     void AddKill();
 };

@@ -1,6 +1,7 @@
 #include "ASPlayerController.h"
 #include "Blueprint/UserWidget.h"
 #include "Engine/Engine.h"
+#include "GameFramework/Actor.h"
 
 AASPlayerController::AASPlayerController()
 {
@@ -54,7 +55,6 @@ void AASPlayerController::ClientShowEndScreen_Implementation(bool bVictory)
 
     if (EndScreenWidgetInstance)
     {
-        // bIsVictory deðiþkenini direkt set et
         FBoolProperty* VictoryProp = FindFProperty<FBoolProperty>(
             EndScreenWidgetInstance->GetClass(), TEXT("bIsVictory"));
         if (VictoryProp)
@@ -62,10 +62,27 @@ void AASPlayerController::ClientShowEndScreen_Implementation(bool bVictory)
             VictoryProp->SetPropertyValue_InContainer(EndScreenWidgetInstance, bVictory);
         }
 
-        // Viewport'a ekle — Event Construct burada tetiklenir
         EndScreenWidgetInstance->AddToViewport();
     }
 
     SetShowMouseCursor(true);
     SetInputMode(FInputModeUIOnly());
+}
+
+void AASPlayerController::ClientSpectatePlayer_Implementation(AActor* Target)
+{
+    if (!Target) return;
+
+    // Hareketi durdur
+    SetIgnoreMoveInput(true);
+    SetIgnoreLookInput(true);
+
+    // Kamerayý yaþayan oyuncuya yönlendir
+    SetViewTargetWithBlend(Target, 1.0f, EViewTargetBlendFunction::VTBlend_Cubic);
+
+    if (GEngine)
+    {
+        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow,
+            TEXT("You are now spectating the other player."));
+    }
 }
