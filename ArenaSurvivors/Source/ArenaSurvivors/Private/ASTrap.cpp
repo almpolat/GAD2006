@@ -1,21 +1,23 @@
 #include "ASTrap.h"
 #include "ASBaseCharacter.h"
-#include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/BoxComponent.h"
 #include "TimerManager.h"
 
 AASTrap::AASTrap()
 {
     PrimaryActorTick.bCanEverTick = false;
 
-    BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
-    BoxComponent->SetBoxExtent(FVector(100.f, 100.f, 20.f));
-    BoxComponent->SetCollisionProfileName(TEXT("Trigger"));
-    RootComponent = BoxComponent;
-
     MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComponent"));
-    MeshComponent->SetupAttachment(RootComponent);
-    MeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    RootComponent = MeshComponent;
+    MeshComponent->SetCollisionProfileName(TEXT("BlockAllDynamic"));
+    MeshComponent->SetGenerateOverlapEvents(false);
+
+    DamageBox = CreateDefaultSubobject<UBoxComponent>(TEXT("DamageBox"));
+    DamageBox->SetupAttachment(RootComponent);
+    DamageBox->SetBoxExtent(FVector(100.f, 100.f, 50.f));
+    DamageBox->SetCollisionProfileName(TEXT("OverlapOnlyPawn"));
+    DamageBox->SetGenerateOverlapEvents(true);
 
     DamagePerSecond = 10.f;
     DamageInterval = 0.5f;
@@ -27,9 +29,9 @@ void AASTrap::BeginPlay()
 {
     Super::BeginPlay();
 
-    BoxComponent->OnComponentBeginOverlap.AddDynamic(
+    DamageBox->OnComponentBeginOverlap.AddDynamic(
         this, &AASTrap::OnOverlapBegin);
-    BoxComponent->OnComponentEndOverlap.AddDynamic(
+    DamageBox->OnComponentEndOverlap.AddDynamic(
         this, &AASTrap::OnOverlapEnd);
 }
 

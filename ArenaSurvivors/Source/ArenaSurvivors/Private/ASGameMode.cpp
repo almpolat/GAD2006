@@ -20,15 +20,8 @@ AASGameMode::AASGameMode()
 void AASGameMode::BeginPlay()
 {
     Super::BeginPlay();
-
-    GetWorldTimerManager().SetTimer(
-        WaveStartTimerHandle,
-        this,
-        &AASGameMode::StartNextWave,
-        3.f,
-        false
-    );
-}
+    // Wave artık kapıdan tetikleniyor, burada başlatmıyoruz
+}   
 
 void AASGameMode::StartNextWave()
 {

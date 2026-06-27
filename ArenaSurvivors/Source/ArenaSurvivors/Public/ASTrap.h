@@ -16,10 +16,10 @@ public:
     virtual void BeginPlay() override;
 
     UPROPERTY(VisibleAnywhere, Category = "Components")
-    class UBoxComponent* BoxComponent;
+    class UStaticMeshComponent* MeshComponent;
 
     UPROPERTY(VisibleAnywhere, Category = "Components")
-    class UStaticMeshComponent* MeshComponent;
+    class UBoxComponent* DamageBox;
 
     UPROPERTY(EditDefaultsOnly, Category = "Trap")
     float DamagePerSecond;

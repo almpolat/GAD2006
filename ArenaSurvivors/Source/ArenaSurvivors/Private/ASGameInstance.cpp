@@ -1,5 +1,6 @@
 #include "ASGameInstance.h"
 #include "Engine/Engine.h"
+#include "Kismet/GameplayStatics.h"
 
 UASGameInstance::UASGameInstance()
 {
@@ -15,33 +16,30 @@ void UASGameInstance::HostGame()
         GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Hosting game..."));
     }
 
-    UWorld* World = GetWorld();
-    if (World)
-    {
-        World->ServerTravel(TEXT("/Game/Maps/ArenaMap?listen"));
-    }
+    GWorld->ServerTravel(TEXT("/Game/Maps/ArenaMap?listen"));
 }
 
 void UASGameInstance::JoinGame(const FString& IPAddress)
 {
+    if (IPAddress.IsEmpty())
+    {
+        if (GEngine)
+        {
+            GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Join failed: IP address is empty"));
+        }
+        return;
+    }
+
     if (GEngine)
     {
         GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow,
             FString::Printf(TEXT("Joining: %s"), *IPAddress));
     }
 
-    APlayerController* PC = GetFirstLocalPlayerController();
-    if (PC)
-    {
-        PC->ClientTravel(IPAddress, ETravelType::TRAVEL_Absolute);
-    }
+    GWorld->GetFirstPlayerController()->ClientTravel(IPAddress, ETravelType::TRAVEL_Absolute);
 }
 
 void UASGameInstance::TravelToArena()
 {
-    UWorld* World = GetWorld();
-    if (World)
-    {
-        World->ServerTravel(TEXT("/Game/Maps/ArenaMap?listen"));
-    }
+    GWorld->ServerTravel(TEXT("/Game/Maps/ArenaMap?listen"));
 }

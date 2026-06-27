@@ -11,6 +11,10 @@ AASAvatar::AASAvatar()
 {
     PrimaryActorTick.bCanEverTick = true;
 
+    // Replication
+    bReplicates = true;
+    GetCharacterMovement()->SetIsReplicated(true);
+
     // Spring Arm
     SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
     SpringArm->SetupAttachment(RootComponent);
