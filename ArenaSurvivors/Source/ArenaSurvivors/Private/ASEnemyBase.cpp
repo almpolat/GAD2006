@@ -1,30 +1,54 @@
 #include "ASEnemyBase.h"
 #include "ASAIController.h"
 #include "ASBaseCharacter.h"
-#include "ASPlayerState.h"
-#include "GameFramework/PlayerController.h"
+#include "ASGameMode.h"
+#include "ASEnemyHealthBarWidget.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "Kismet/GameplayStatics.h"
+#include "Components/CapsuleComponent.h"
+#include "Components/WidgetComponent.h"
+#include "Blueprint/UserWidget.h"
 #include "Engine/Engine.h"
 #include "TimerManager.h"
 
 AASEnemyBase::AASEnemyBase()
 {
+    PrimaryActorTick.bCanEverTick = true;
+
     AttackDamage = 10.f;
     AttackCooldown = 1.5f;
     ScoreValue = 100;
     bCanAttack = true;
+    bIsMeleeEnemy = false;
 
     AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
     AIControllerClass = AASAIController::StaticClass();
 
-    // Düþman hýzýný düþür
     GetCharacterMovement()->MaxWalkSpeed = 200.f;
+
+    HealthBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBarWidget"));
+    HealthBarWidget->SetupAttachment(RootComponent);
+    HealthBarWidget->SetRelativeLocation(FVector(0.f, 0.f, 110.f));
+    HealthBarWidget->SetWidgetSpace(EWidgetSpace::Screen);
+    HealthBarWidget->SetDrawSize(FVector2D(80.f, 10.f));
 }
 
 void AASEnemyBase::BeginPlay()
 {
     Super::BeginPlay();
+}
+
+void AASEnemyBase::Tick(float DeltaTime)
+{
+    Super::Tick(DeltaTime);
+
+    if (HealthBarWidget)
+    {
+        UASEnemyHealthBarWidget* Widget = Cast<UASEnemyHealthBarWidget>(HealthBarWidget->GetUserWidgetObject());
+        if (Widget)
+        {
+            Widget->SetHealthPercent(GetHealthPercent());
+        }
+    }
 }
 
 void AASEnemyBase::PerformAttack()
@@ -37,9 +61,18 @@ void AASEnemyBase::PerformAttack()
     if (AIC && AIC->CurrentTarget)
     {
         AASBaseCharacter* Target = Cast<AASBaseCharacter>(AIC->CurrentTarget);
-        if (Target)
+        if (Target && !Target->bIsDead)
         {
-            Target->TakeDamage_AS(AttackDamage);
+            float MyRadius = GetCapsuleComponent() ? GetCapsuleComponent()->GetScaledCapsuleRadius() : 0.f;
+            float TargetRadius = Target->GetCapsuleComponent() ? Target->GetCapsuleComponent()->GetScaledCapsuleRadius() : 0.f;
+
+            float PivotDistance = FVector::Dist(GetActorLocation(), Target->GetActorLocation());
+            float SurfaceDistance = PivotDistance - MyRadius - TargetRadius;
+
+            if (SurfaceDistance <= 40.f)
+            {
+                Target->TakeDamage_AS(AttackDamage);
+            }
         }
     }
 
@@ -61,23 +94,12 @@ void AASEnemyBase::Die()
 {
     Super::Die();
 
-    TArray<AActor*> Controllers;
-    UGameplayStatics::GetAllActorsOfClass(
-        GetWorld(),
-        APlayerController::StaticClass(),
-        Controllers
-    );
-
-    for (AActor* ControllerActor : Controllers)
+    if (HasAuthority())
     {
-        APlayerController* PC = Cast<APlayerController>(ControllerActor);
-        if (PC)
+        AASGameMode* GM = Cast<AASGameMode>(GetWorld()->GetAuthGameMode());
+        if (GM)
         {
-            AASPlayerState* PS = PC->GetPlayerState<AASPlayerState>();
-            if (PS)
-            {
-                PS->AddKill();
-            }
+            GM->OnEnemyKilled(nullptr, bIsMeleeEnemy);
         }
     }
 

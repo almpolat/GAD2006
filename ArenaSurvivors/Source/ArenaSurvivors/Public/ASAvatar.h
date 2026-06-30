@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "CoreMinimal.h"
 #include "ASBaseCharacter.h"
@@ -17,14 +17,12 @@ public:
     virtual void SetupPlayerInputComponent(
         class UInputComponent* PlayerInputComponent) override;
 
-    // Kamera
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
     class USpringArmComponent* SpringArm;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
     class UCameraComponent* Camera;
 
-    // Dash
     UPROPERTY(EditDefaultsOnly, Category = "Dash")
     float DashDistance;
 
@@ -34,7 +32,6 @@ public:
     UPROPERTY(BlueprintReadOnly, Category = "Dash")
     bool bCanDash;
 
-    // Melee saldýrý
     UPROPERTY(EditDefaultsOnly, Category = "Combat")
     float MeleeDamage;
 
@@ -44,7 +41,15 @@ public:
     UPROPERTY(BlueprintReadOnly, Category = "Combat")
     bool bIsAttacking;
 
-    // Input fonksiyonlarý
+    UPROPERTY(ReplicatedUsing = OnRep_CostumeRowName, BlueprintReadOnly, Category = "Costume")
+    FName ReplicatedCostumeRowName;
+
+    UFUNCTION()
+    void OnRep_CostumeRowName();
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI")
+    class UWidgetComponent* NameTagWidget;
+
     void MoveForward(float Value);
 
     UFUNCTION(BlueprintCallable, Category = "Dash")
@@ -53,16 +58,27 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Combat")
     void MeleeAttack();
 
-    // Server RPC'ler
     UFUNCTION(Server, Reliable, WithValidation)
     void Server_Dash(FVector Direction);
 
     UFUNCTION(Server, Reliable, WithValidation)
     void Server_MeleeAttack();
 
+    UFUNCTION(BlueprintCallable, Server, Reliable, Category = "Networking")
+    void Server_SetRotation(FRotator NewRotation);
+
+    UFUNCTION(Server, Reliable)
+    void Server_SetPlayerInfo(const FString& Nickname, int32 InCostumeIndex, FName InCostumeRowName);
+
+    UFUNCTION(BlueprintImplementableEvent, Category = "Costume")
+    void ApplyCostumeFromPlayerState();
+
 protected:
     FTimerHandle DashCooldownTimer;
 
     void ResetDash();
     void PerformMeleeTrace();
+
+    virtual void GetLifetimeReplicatedProps(
+        TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };

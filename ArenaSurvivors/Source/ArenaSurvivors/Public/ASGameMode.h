@@ -42,6 +42,16 @@ public:
     UPROPERTY(EditDefaultsOnly, Category = "Wave")
     int32 MaxWaves;
 
+    // Health Pickup spawn sistemi
+    UPROPERTY(EditDefaultsOnly, Category = "Pickups")
+    TSubclassOf<class AASHealthPickup> HealthPickupClass;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Pickups")
+    int32 HealthPickupCount;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Pickups")
+    float HealthPickupSpawnRadius;
+
 protected:
     int32 CurrentWave;
     int32 AliveEnemyCount;
@@ -50,6 +60,12 @@ protected:
     bool bGameEnded;
 
     void SpawnEnemiesForWave();
+
+    void SpawnHealthPickups();
+    void ClearHealthPickups();
+
+    UPROPERTY()
+    TArray<AActor*> ActiveHealthPickups;
 
     FTimerHandle WaveStartTimerHandle;
 };

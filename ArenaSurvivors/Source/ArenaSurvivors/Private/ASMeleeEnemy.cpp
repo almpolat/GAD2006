@@ -9,6 +9,7 @@ AASMeleeEnemy::AASMeleeEnemy()
     MeleeAttackRange = 150.f;
     AttackDamage = 15.f;
     MaxHealth = 80.f;
+    bIsMeleeEnemy = true;
 }
 
 void AASMeleeEnemy::Tick(float DeltaTime)

@@ -27,9 +27,16 @@ public:
     UPROPERTY(Replicated, BlueprintReadWrite, Category = "Player")
     int32 CostumeIndex;
 
+    UPROPERTY(ReplicatedUsing = OnRep_CostumeRowName, BlueprintReadWrite, Category = "Player")
+    FName CostumeRowName;
+
     UFUNCTION(BlueprintCallable, Category = "Stats")
     void AddScore(int32 Amount);
 
     UFUNCTION(BlueprintCallable, Category = "Stats")
     void AddKill();
+
+protected:
+    UFUNCTION()
+    void OnRep_CostumeRowName();
 };

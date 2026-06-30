@@ -50,8 +50,13 @@ AActor* AASAIController::FindNearestPlayer()
 
     for (AActor* Actor : Players)
     {
+        // Düþmanlarý atla
         AASEnemyBase* AsEnemy = Cast<AASEnemyBase>(Actor);
         if (AsEnemy) continue;
+
+        // KRITIK: Ölü oyuncularý atla
+        AASBaseCharacter* AsChar = Cast<AASBaseCharacter>(Actor);
+        if (AsChar && AsChar->bIsDead) continue;
 
         float Dist = FVector::Dist(MyPawn->GetActorLocation(), Actor->GetActorLocation());
         if (Dist < MinDist)

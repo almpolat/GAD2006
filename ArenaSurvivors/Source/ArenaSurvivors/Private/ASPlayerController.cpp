@@ -1,4 +1,5 @@
 #include "ASPlayerController.h"
+#include "ASGameInstance.h"
 #include "Blueprint/UserWidget.h"
 #include "Engine/Engine.h"
 #include "GameFramework/Actor.h"
@@ -73,11 +74,8 @@ void AASPlayerController::ClientSpectatePlayer_Implementation(AActor* Target)
 {
     if (!Target) return;
 
-    // Hareketi durdur
     SetIgnoreMoveInput(true);
     SetIgnoreLookInput(true);
-
-    // Kamerayý yaþayan oyuncuya yönlendir
     SetViewTargetWithBlend(Target, 1.0f, EViewTargetBlendFunction::VTBlend_Cubic);
 
     if (GEngine)
@@ -85,4 +83,20 @@ void AASPlayerController::ClientSpectatePlayer_Implementation(AActor* Target)
         GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow,
             TEXT("You are now spectating the other player."));
     }
+}
+
+void AASPlayerController::Client_StoreEndGameResults_Implementation(
+    bool bVictory, int32 WaveReached, int32 TotalKills, int32 MeleeKills, int32 RangedKills)
+{
+    UASGameInstance* GI = Cast<UASGameInstance>(GetGameInstance());
+    if (!GI) return;
+
+    GI->bLastGameVictory = bVictory;
+    GI->LastWaveReached = WaveReached;
+    GI->LastTotalKills = TotalKills;
+    GI->LastMeleeKills = MeleeKills;
+    GI->LastRangedKills = RangedKills;
+
+    UE_LOG(LogTemp, Warning, TEXT("Client_StoreEndGameResults received. Victory=%d, Wave=%d, Kills=%d"),
+        bVictory ? 1 : 0, WaveReached, TotalKills);
 }

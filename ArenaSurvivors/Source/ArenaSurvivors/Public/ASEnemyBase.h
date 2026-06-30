@@ -13,18 +13,22 @@ public:
     AASEnemyBase();
 
     virtual void BeginPlay() override;
+    virtual void Tick(float DeltaTime) override;
 
-    // Saldýrý hasarý
     UPROPERTY(EditDefaultsOnly, Category = "Combat")
     float AttackDamage;
 
-    // Saldýrý cooldown
     UPROPERTY(EditDefaultsOnly, Category = "Combat")
     float AttackCooldown;
 
-    // Öldüðünde puan ver
     UPROPERTY(EditDefaultsOnly, Category = "Combat")
     int32 ScoreValue;
+
+    UPROPERTY(VisibleAnywhere, Category = "Combat")
+    bool bIsMeleeEnemy;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI")
+    class UWidgetComponent* HealthBarWidget;
 
     UFUNCTION(BlueprintCallable, Category = "Combat")
     virtual void PerformAttack();

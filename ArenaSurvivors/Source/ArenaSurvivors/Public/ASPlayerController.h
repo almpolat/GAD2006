@@ -32,6 +32,11 @@ public:
     UFUNCTION(Client, Reliable, Category = "Spectator")
     void ClientSpectatePlayer(AActor* Target);
 
+    // End-game sonuçlarýný client GameInstance'a yazar
+    UFUNCTION(Client, Reliable, Category = "EndGame")
+    void Client_StoreEndGameResults(bool bVictory, int32 WaveReached,
+        int32 TotalKills, int32 MeleeKills, int32 RangedKills);
+
 private:
     UPROPERTY()
     UUserWidget* HUDWidgetInstance;

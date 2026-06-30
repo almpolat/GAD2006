@@ -12,6 +12,7 @@ class ARENASURVIVORS_API UASGameInstance : public UGameInstance
 public:
     UASGameInstance();
 
+    // Oyuncu bilgileri
     UPROPERTY(BlueprintReadWrite, Category = "Player Info")
     FString PlayerNickname;
 
@@ -20,6 +21,22 @@ public:
 
     UPROPERTY(BlueprintReadWrite, Category = "Player Info")
     FName CostumeRowName;
+
+    // End-game sonuçlarý
+    UPROPERTY(BlueprintReadWrite, Category = "End Game")
+    bool bLastGameVictory;
+
+    UPROPERTY(BlueprintReadWrite, Category = "End Game")
+    int32 LastWaveReached;
+
+    UPROPERTY(BlueprintReadWrite, Category = "End Game")
+    int32 LastTotalKills;
+
+    UPROPERTY(BlueprintReadWrite, Category = "End Game")
+    int32 LastMeleeKills;
+
+    UPROPERTY(BlueprintReadWrite, Category = "End Game")
+    int32 LastRangedKills;
 
     UFUNCTION(BlueprintCallable, Category = "Network")
     void HostGame();

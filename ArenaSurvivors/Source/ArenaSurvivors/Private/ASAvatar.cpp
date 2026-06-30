@@ -1,11 +1,18 @@
 #include "ASAvatar.h"
+#include "ASGameInstance.h"
+#include "ASPlayerState.h"
+#include "ASPlayerNameTagWidget.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/WidgetComponent.h"
+#include "Net/UnrealNetwork.h"
 #include "TimerManager.h"
 #include "Engine/Engine.h"
 #include "DrawDebugHelpers.h"
+#include "WorldCollision.h"
+#include "Engine/OverlapResult.h"
 
 AASAvatar::AASAvatar()
 {
@@ -36,25 +43,66 @@ AASAvatar::AASAvatar()
     bCanDash = true;
 
     MeleeDamage = 25.f;
-    MeleeRange = 120.f;
+    MeleeRange = 155.f;
     bIsAttacking = false;
+
+    ReplicatedCostumeRowName = FName("Costume1");
+
+    NameTagWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("NameTagWidget"));
+    NameTagWidget->SetupAttachment(RootComponent);
+    NameTagWidget->SetRelativeLocation(FVector(0.f, 0.f, 130.f));
+    NameTagWidget->SetWidgetSpace(EWidgetSpace::Screen);
+    NameTagWidget->SetDrawSize(FVector2D(120.f, 20.f));
+}
+
+void AASAvatar::GetLifetimeReplicatedProps(
+    TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+    DOREPLIFETIME(AASAvatar, ReplicatedCostumeRowName);
 }
 
 void AASAvatar::BeginPlay()
 {
     Super::BeginPlay();
+
+    if (IsLocallyControlled())
+    {
+        UASGameInstance* GI = Cast<UASGameInstance>(GetGameInstance());
+        if (GI)
+        {
+            Server_SetPlayerInfo(GI->PlayerNickname, GI->CostumeIndex, GI->CostumeRowName);
+        }
+    }
+}
+
+void AASAvatar::OnRep_CostumeRowName()
+{
+    ApplyCostumeFromPlayerState();
 }
 
 void AASAvatar::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
+
+    if (NameTagWidget)
+    {
+        UASPlayerNameTagWidget* Widget = Cast<UASPlayerNameTagWidget>(NameTagWidget->GetUserWidgetObject());
+        if (Widget)
+        {
+            AASPlayerState* PS = GetPlayerState<AASPlayerState>();
+            if (PS)
+            {
+                Widget->SetNickname(PS->PlayerNickname);
+            }
+        }
+    }
 }
 
 void AASAvatar::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
     Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-    // Sadece locally controlled pawn input alýr
     if (!IsLocallyControlled()) return;
 
     PlayerInputComponent->BindAxis("MoveForward", this, &AASAvatar::MoveForward);
@@ -107,6 +155,24 @@ void AASAvatar::MeleeAttack()
 {
     if (!IsLocallyControlled()) return;
     if (bIsAttacking || bIsDead) return;
+
+    FVector CapsuleCenter = GetActorLocation() + GetActorForwardVector() * 120.f;
+    CapsuleCenter.Z = GetActorLocation().Z;
+
+    FRotator CapsuleRotation = GetActorRotation();
+    FQuat CapsuleQuat = (CapsuleRotation + FRotator(90.f, 0.f, 0.f)).Quaternion();
+
+    DrawDebugCapsule(
+        GetWorld(),
+        CapsuleCenter,
+        140.f,
+        30.f,
+        CapsuleQuat,
+        FColor::Red,
+        false,
+        0.5f
+    );
+
     Server_MeleeAttack();
 }
 
@@ -129,25 +195,75 @@ bool AASAvatar::Server_MeleeAttack_Validate()
 
 void AASAvatar::PerformMeleeTrace()
 {
-    FVector Start = GetActorLocation();
-    FVector End = Start + GetActorForwardVector() * MeleeRange;
+    FVector CapsuleCenter = GetActorLocation() + GetActorForwardVector() * 120.f;
+    CapsuleCenter.Z = GetActorLocation().Z;
 
-    FHitResult HitResult;
-    FCollisionQueryParams Params;
-    Params.AddIgnoredActor(this);
+    FQuat CapsuleQuat = (GetActorRotation() + FRotator(90.f, 0.f, 0.f)).Quaternion();
 
-    bool bHit = GetWorld()->SweepSingleByChannel(
-        HitResult, Start, End, FQuat::Identity,
-        ECC_Pawn, FCollisionShape::MakeSphere(50.f), Params);
+    TArray<FOverlapResult> Overlaps;
 
-    if (bHit)
+    FCollisionObjectQueryParams ObjectParams;
+    ObjectParams.AddObjectTypesToQuery(ECC_Pawn);
+    ObjectParams.AddObjectTypesToQuery(ECC_PhysicsBody);
+    ObjectParams.AddObjectTypesToQuery(ECC_WorldDynamic);
+
+    FCollisionQueryParams QueryParams;
+    QueryParams.AddIgnoredActor(this);
+    QueryParams.bTraceComplex = false;
+
+    bool bHit = GetWorld()->OverlapMultiByObjectType(
+        Overlaps,
+        CapsuleCenter,
+        CapsuleQuat,
+        ObjectParams,
+        FCollisionShape::MakeCapsule(30.f, 140.f),
+        QueryParams
+    );
+
+    if (Overlaps.Num() == 0) return;
+
+    FVector MyForward = GetActorForwardVector();
+    TSet<AActor*> AlreadyDamaged;
+
+    for (const FOverlapResult& Result : Overlaps)
     {
-        AASBaseCharacter* Target = Cast<AASBaseCharacter>(HitResult.GetActor());
-        if (Target)
+        AActor* HitActor = Result.GetActor();
+        if (!HitActor && Result.GetComponent())
+        {
+            HitActor = Result.GetComponent()->GetOwner();
+        }
+        if (!HitActor || HitActor == this) continue;
+        if (AlreadyDamaged.Contains(HitActor)) continue;
+
+        AASBaseCharacter* Target = Cast<AASBaseCharacter>(HitActor);
+        if (!Target || Target->bIsDead) continue;
+
+        FVector ToTarget = (Target->GetActorLocation() - GetActorLocation()).GetSafeNormal();
+        float Dot = FVector::DotProduct(MyForward, ToTarget);
+
+        if (Dot > -0.3f)
         {
             Target->TakeDamage_AS(MeleeDamage);
+            AlreadyDamaged.Add(HitActor);
         }
     }
+}
 
-    DrawDebugSphere(GetWorld(), End, 50.f, 8, FColor::Red, false, 0.5f);
+void AASAvatar::Server_SetRotation_Implementation(FRotator NewRotation)
+{
+    SetActorRotation(NewRotation);
+}
+
+void AASAvatar::Server_SetPlayerInfo_Implementation(
+    const FString& Nickname, int32 InCostumeIndex, FName InCostumeRowName)
+{
+    AASPlayerState* PS = GetPlayerState<AASPlayerState>();
+    if (PS)
+    {
+        PS->PlayerNickname = Nickname;
+        PS->CostumeIndex = InCostumeIndex;
+        PS->CostumeRowName = InCostumeRowName;
+    }
+
+    ReplicatedCostumeRowName = InCostumeRowName;
 }

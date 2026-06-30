@@ -50,8 +50,8 @@ void AASBaseCharacter::Die()
 
 float AASBaseCharacter::GetHealthPercent() const
 {
-    if (MaxHealth <= 0.f) return 0.f;
-    return Health / MaxHealth;
+    if (MaxHealth <= 0.f) return 1.f;
+    return FMath::Clamp(Health / MaxHealth, 0.f, 1.f);
 }
 
 void AASBaseCharacter::OnRep_Health()
