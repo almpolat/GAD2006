@@ -428,3 +428,14 @@ Labwork4/Content/Meshes/
 Labwork4/Content/Textures/
 Labwork4/Content/Materials/
 Labwork4/Content/AM_Dash/
+# ArenaSurvivors - UE5 ignored folders
+ArenaSurvivors/Binaries/
+ArenaSurvivors/Intermediate/
+ArenaSurvivors/DerivedDataCache/
+ArenaSurvivors/Saved/
+ArenaSurvivors/.vs/
+ArenaSurvivors/ArenaSurvivors.sln
+ArenaSurvivors/.vsconfig
+ArenaSurvivors/Content/Cartoon_City_Free/
+ArenaSurvivors/Content/Creative_Characters_FREE/
+ArenaSurvivors/Content/Military_FREE/
