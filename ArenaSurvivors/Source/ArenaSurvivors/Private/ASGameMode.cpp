@@ -31,11 +31,6 @@ void AASGameMode::BeginPlay()
 {
     Super::BeginPlay();
     AlivePlayerCount = 0;
-    if (GEngine)
-    {
-        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Cyan,
-            TEXT("ArenaMap loaded. Waiting for players to exit door..."));
-    }
 }
 
 void AASGameMode::StartNextWave()
@@ -62,17 +57,8 @@ void AASGameMode::StartNextWave()
     }
 
     SpawnEnemiesForWave();
-
-    // Her wave başında eski pickup'ları temizle, yenilerini spawn et
     ClearHealthPickups();
     SpawnHealthPickups();
-
-    if (GEngine)
-    {
-        GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Orange,
-            FString::Printf(TEXT("Wave %d / %d started! Enemies: %d"),
-                CurrentWave, MaxWaves, AliveEnemyCount));
-    }
 }
 
 void AASGameMode::SpawnEnemiesForWave()
@@ -124,13 +110,8 @@ void AASGameMode::SpawnHealthPickups()
     if (!World) return;
 
     UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(World);
-    if (!NavSys)
-    {
-        UE_LOG(LogTemp, Warning, TEXT("SpawnHealthPickups: NavigationSystem not found!"));
-        return;
-    }
+    if (!NavSys) return;
 
-    // Arena merkezi olarak GameMode'un kendi konumunu ya da (0,0,0) kullanıyoruz
     FVector Origin = FVector::ZeroVector;
 
     for (int32 i = 0; i < HealthPickupCount; i++)
@@ -149,10 +130,6 @@ void AASGameMode::SpawnHealthPickups()
             {
                 ActiveHealthPickups.Add(NewPickup);
             }
-        }
-        else
-        {
-            UE_LOG(LogTemp, Warning, TEXT("SpawnHealthPickups: Could not find valid NavMesh point (attempt %d)"), i);
         }
     }
 }
@@ -189,17 +166,13 @@ void AASGameMode::OnEnemyKilled(APlayerController* Killer, bool bWasMeleeEnemy)
             GS->GamePhase = EGamePhase::BetweenWaves;
         }
 
-        if (GEngine)
-        {
-            GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Green,
-                TEXT("Wave cleared! Next wave in 5 seconds..."));
-        }
+        float NextWaveDelay = (CurrentWave >= MaxWaves) ? 1.5f : 5.f;
 
         GetWorldTimerManager().SetTimer(
             WaveStartTimerHandle,
             this,
             &AASGameMode::StartNextWave,
-            5.f,
+            NextWaveDelay,
             false
         );
     }
@@ -234,21 +207,9 @@ void AASGameMode::OnPlayerDied(APlayerController* DeadPlayerController)
         {
             DeadPC->ClientSpectatePlayer(AliveTarget);
         }
-
-        if (GEngine)
-        {
-            GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow,
-                TEXT("One player died. Other player continues!"));
-        }
     }
     else
     {
-        if (GEngine)
-        {
-            GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red,
-                TEXT("Both players dead! Game Over."));
-        }
-
         EndGame(false);
     }
 }
@@ -257,8 +218,6 @@ void AASGameMode::EndGame(bool bPlayersWon)
 {
     if (bGameEnded) return;
     bGameEnded = true;
-
-    UE_LOG(LogTemp, Warning, TEXT("EndGame called. bPlayersWon = %d"), bPlayersWon ? 1 : 0);
 
     GetWorldTimerManager().ClearTimer(WaveStartTimerHandle);
 

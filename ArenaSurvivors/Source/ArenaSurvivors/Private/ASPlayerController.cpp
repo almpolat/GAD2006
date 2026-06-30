@@ -77,12 +77,6 @@ void AASPlayerController::ClientSpectatePlayer_Implementation(AActor* Target)
     SetIgnoreMoveInput(true);
     SetIgnoreLookInput(true);
     SetViewTargetWithBlend(Target, 1.0f, EViewTargetBlendFunction::VTBlend_Cubic);
-
-    if (GEngine)
-    {
-        GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow,
-            TEXT("You are now spectating the other player."));
-    }
 }
 
 void AASPlayerController::Client_StoreEndGameResults_Implementation(
@@ -96,7 +90,4 @@ void AASPlayerController::Client_StoreEndGameResults_Implementation(
     GI->LastTotalKills = TotalKills;
     GI->LastMeleeKills = MeleeKills;
     GI->LastRangedKills = RangedKills;
-
-    UE_LOG(LogTemp, Warning, TEXT("Client_StoreEndGameResults received. Victory=%d, Wave=%d, Kills=%d"),
-        bVictory ? 1 : 0, WaveReached, TotalKills);
 }
