@@ -68,13 +68,23 @@ void AASGameMode::SpawnEnemiesForWave()
     UWorld* World = GetWorld();
     if (!World) return;
 
+    UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(World);
+
     for (int32 i = 0; i < AliveEnemyCount; i++)
     {
-        FVector SpawnLocation = FVector(
-            FMath::RandRange(-800.f, 800.f),
-            FMath::RandRange(-800.f, 800.f),
-            100.f
-        );
+        FVector SpawnLocation = FVector(0.f, 0.f, 100.f);
+
+        if (NavSys)
+        {
+            FNavLocation ResultLocation;
+            bool bFound = NavSys->GetRandomReachablePointInRadius(
+                FVector::ZeroVector, 800.f, ResultLocation);
+
+            if (bFound)
+            {
+                SpawnLocation = ResultLocation.Location + FVector(0.f, 0.f, 50.f);
+            }
+        }
 
         FRotator SpawnRotation = FRotator::ZeroRotator;
 

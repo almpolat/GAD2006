@@ -15,7 +15,7 @@ AASEnemyBase::AASEnemyBase()
     PrimaryActorTick.bCanEverTick = true;
 
     AttackDamage = 10.f;
-    AttackCooldown = 1.5f;
+    AttackCooldown = 0.7f;
     ScoreValue = 100;
     bCanAttack = true;
     bIsMeleeEnemy = false;

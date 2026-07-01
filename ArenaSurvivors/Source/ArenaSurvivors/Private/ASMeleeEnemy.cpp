@@ -6,7 +6,7 @@ AASMeleeEnemy::AASMeleeEnemy()
 {
     PrimaryActorTick.bCanEverTick = true;
 
-    MeleeAttackRange = 150.f;
+    MeleeAttackRange = 200.f;
     AttackDamage = 15.f;
     MaxHealth = 80.f;
     bIsMeleeEnemy = true;
