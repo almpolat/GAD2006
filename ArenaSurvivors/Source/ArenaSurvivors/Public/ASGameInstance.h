@@ -46,4 +46,7 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "Network")
     void TravelToArena();
+
+    UFUNCTION(BlueprintCallable, Category = "Network")
+    void TravelToTutorial();
 };

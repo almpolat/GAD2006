@@ -37,18 +37,38 @@ void AASTutorialCharacter::BeginPlay()
 {
     Super::BeginPlay();
 
-    // Pitch'i sabit -15 dereceye kilitle
     APlayerController* PC = Cast<APlayerController>(GetController());
     if (PC)
     {
+        EnableInput(PC);
+
+        FInputModeGameOnly InputMode;
+        PC->SetInputMode(InputMode);
+        PC->SetShowMouseCursor(false);
+
         PC->SetControlRotation(FRotator(-15.f, GetActorRotation().Yaw, 0.f));
 
-        // Camera manager pitch kilidini sýkýþtýr
         if (PC->PlayerCameraManager)
         {
             PC->PlayerCameraManager->ViewPitchMin = -15.f;
             PC->PlayerCameraManager->ViewPitchMax = -15.f;
         }
+    }
+    else
+    {
+        // PC null ise kýsa gecikme sonrasý tekrar dene
+        FTimerHandle RetryTimer;
+        GetWorldTimerManager().SetTimer(RetryTimer, [this]()
+            {
+                APlayerController* RetryPC = Cast<APlayerController>(GetController());
+                if (RetryPC)
+                {
+                    EnableInput(RetryPC);
+                    FInputModeGameOnly InputMode;
+                    RetryPC->SetInputMode(InputMode);
+                    RetryPC->SetShowMouseCursor(false);
+                }
+            }, 0.5f, false);
     }
 }
 

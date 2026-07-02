@@ -69,7 +69,7 @@ void AASEnemyBase::PerformAttack()
             float PivotDistance = FVector::Dist(GetActorLocation(), Target->GetActorLocation());
             float SurfaceDistance = PivotDistance - MyRadius - TargetRadius;
 
-            if (SurfaceDistance <= 40.f)
+            if (SurfaceDistance <= 50.f)
             {
                 Target->TakeDamage_AS(AttackDamage);
             }

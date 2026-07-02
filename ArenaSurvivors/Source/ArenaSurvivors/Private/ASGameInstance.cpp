@@ -41,3 +41,10 @@ void UASGameInstance::TravelToArena()
     if (!World) return;
     World->ServerTravel(TEXT("/Game/Maps/ArenaMap?listen"));
 }
+
+void UASGameInstance::TravelToTutorial()
+{
+    APlayerController* PC = GetFirstLocalPlayerController();
+    if (!PC) return;
+    PC->ClientTravel(TEXT("/Game/Maps/TutorialMap"), ETravelType::TRAVEL_Absolute);
+}

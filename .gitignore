@@ -428,6 +428,7 @@ Labwork4/Content/Meshes/
 Labwork4/Content/Textures/
 Labwork4/Content/Materials/
 Labwork4/Content/AM_Dash/
+
 # ArenaSurvivors - UE5 ignored folders
 ArenaSurvivors/Binaries/
 ArenaSurvivors/Intermediate/
@@ -439,3 +440,19 @@ ArenaSurvivors/.vsconfig
 ArenaSurvivors/Content/Cartoon_City_Free/
 ArenaSurvivors/Content/Creative_Characters_FREE/
 ArenaSurvivors/Content/Military_FREE/
+ArenaSurvivors/Build/
+ArenaSurvivors/Content/__ExternalActors__/
+ArenaSurvivors/Content/__ExternalObjects__/
+ArenaSurvivors/Content/Characters/
+ArenaSurvivors/Content/Collections/
+ArenaSurvivors/Content/Developers/
+ArenaSurvivors/Content/Input/
+ArenaSurvivors/Content/LevelPrototyping/
+ArenaSurvivors/Content/ThirdPerson/
+ArenaSurvivors/Content/Variant_Combat/
+ArenaSurvivors/Content/Variant_Platforming/
+ArenaSurvivors/Content/Variant_SideScrolling/
+# Final deliverable archives - do not push to GitHub
+*.zip
+*.rar
+*.7z

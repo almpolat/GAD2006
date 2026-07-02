@@ -8,9 +8,9 @@ AASRangedEnemy::AASRangedEnemy()
 {
     PrimaryActorTick.bCanEverTick = true;
 
-    RangedAttackRange = 600.f;
-    MinDistance = 200.f;
-    AttackDamage = 10.f;
+    RangedAttackRange = 200.f;  // 600'den 400'e
+    MinDistance = 100.f;
+    AttackDamage = 5.f;         // 10'dan 0'a... 
     AttackCooldown = 2.f;
     MaxHealth = 50.f;
 }
